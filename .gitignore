@@ -1,0 +1,11 @@
+# OS / tooling
+.DS_Store
+*.log
+
+# Node
+node_modules/
+# (optional) keep lockfile out of this theme repo
+package-lock.json
+
+# Shopify CLI cache
+.shopify/

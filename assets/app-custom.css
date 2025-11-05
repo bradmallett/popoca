@@ -1,0 +1,6 @@
+/* /assets/app-custom.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* then any custom CSS you want after */
