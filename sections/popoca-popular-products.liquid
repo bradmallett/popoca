@@ -1,14 +1,14 @@
 
-<section>
+<section class="w-full">
     {% liquid
         assign coll = section.settings.collection
         assign products_to_show = section.settings.products_to_show | default: 8
     %}
 
     {% if section.settings.heading != blank or section.settings.subheading != blank %}
-        <header class="">
+        <header class="text-center">
             {% if section.settings.heading != blank %}
-                <h2 class="">{{ section.settings.heading | escape }}</h2>
+                <h2 class="text-xl font-bold">{{ section.settings.heading | escape }}</h2>
             {% endif %}
             {% if section.settings.subheading != blank %}
                 <p class="">{{ section.settings.subheading | escape }}</p>
@@ -17,7 +17,7 @@
     {% endif %}
 
     {% if coll and coll.products_count > 0 %}
-        <ul class="">
+        <ul class="flex flex-wrap mx-auto w-2/3 justify-center">
             {% for product in coll.products limit: products_to_show %}
                 <li class="grid__item">
                     {% render 'popoca-product-card',

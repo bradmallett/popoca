@@ -1,0 +1,32 @@
+{%- doc -%}
+  This snippet is used to render a Popoca product card.
+  
+  @param {object} product - The product object
+  @param {boolean} show_price - Whether to show the price or not
+  @param {number} [max_description_length] - The length the description is allowed to be
+
+{%- enddoc -%}
+
+<article 
+    data-product-card
+    data-product-id="{{ product.id }}"
+    class="w-[300px]">
+    <div class="w-full aspect-[2/3] overflow-hidden rounded-lg bg-gray-100">
+        {{ product.selected_or_first_available_variant.featured_media | image_url: width: 900 | image_tag: class: 'w-full h-full object-cover', alt: product.title }}
+    </div>
+    <h2 class="text-lg font-bold">{{ product.title }}</h2>
+    <p>{{ product.description }}</p>
+    <p>{{ product.selected_or_first_available_variant.price | money }}</p>
+
+ 
+    {% if product.variants %}
+        <ul class="flex">
+        
+        {% for variant in product.variants -%}
+            <li class="mx-2">
+                <button data-variant-id={{ variant.id }} class="p-2 bg-gray-400 text-white">{{ variant.title }}</button>
+            </li>
+        {%- endfor %}
+        </ul>
+    {% endif %}
+</article>
