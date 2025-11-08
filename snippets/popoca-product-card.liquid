@@ -7,24 +7,41 @@
 
 {%- enddoc -%}
 
-<article 
-    data-product-card
+<article
+    data-popular-product-card
     data-product-id="{{ product.id }}"
     class="w-[300px]">
-    <div class="w-full aspect-[2/3] overflow-hidden rounded-lg bg-gray-100">
-        {{ product.selected_or_first_available_variant.featured_media | image_url: width: 900 | image_tag: class: 'w-full h-full object-cover', alt: product.title }}
+    <div class="w-full aspect-[2/3] overflow-hidden rounded-lg bg-gray-100 relative">
+        {{ product.selected_or_first_available_variant.featured_media 
+            | image_url: width: 900 
+            | image_tag: class: 'w-full h-full object-cover',
+            alt: product.title,
+            data-featured-image: 'true' 
+        }}
+
+        <p data-on-sale class="hidden absolute font-bold text-lg text-red-600 top-2 left-2 bg-white rounded-md p-1">{{ 'content.product_badge_sale' | t}}</p>
     </div>
+
     <h2 class="text-lg font-bold">{{ product.title }}</h2>
     <p>{{ product.description }}</p>
-    <p>{{ product.selected_or_first_available_variant.price | money }}</p>
+    <p data-price-el>{{ product.selected_or_first_available_variant.price | money }}</p>
 
- 
     {% if product.variants %}
         <ul class="flex">
         
         {% for variant in product.variants -%}
+            {% assign primary_url = variant.featured_media | default: product.featured_media | image_url: width: 900 %}
             <li class="mx-2">
-                <button data-variant-id={{ variant.id }} class="p-2 bg-gray-400 text-white">{{ variant.title }}</button>
+                <button
+                    data-id="{{ variant.id }}"
+                    data-image="{{ primary_url }}"
+                    data-price-cents="{{ variant.price }}"
+                    data-compare-price-cents="{{ variant.compare_at_price }}"
+                    data-price-money="{{ variant.price | money}}"
+                    class="p-2 bg-gray-400 text-white"
+                >
+                        {{ variant.title }}
+                </button>
             </li>
         {%- endfor %}
         </ul>
