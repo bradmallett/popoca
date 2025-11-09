@@ -1,5 +1,5 @@
 
-<section class="w-full">
+<section class="w-full my-12">
     {% liquid
         assign coll = section.settings.collection
         assign products_to_show = section.settings.products_to_show | default: 8
@@ -8,10 +8,10 @@
     {% if section.settings.heading != blank or section.settings.subheading != blank %}
         <header class="text-center">
             {% if section.settings.heading != blank %}
-                <h2 class="text-xl font-bold">{{ section.settings.heading | escape }}</h2>
+                <h2 class="text-3xl text-red-600 font-bold uppercase">{{ section.settings.heading | escape }}</h2>
             {% endif %}
             {% if section.settings.subheading != blank %}
-                <p class="">{{ section.settings.subheading | escape }}</p>
+                <p class="text-red-600 font-thin text-lg">{{ section.settings.subheading | escape }}</p>
             {% endif %}
         </header>
     {% endif %}
@@ -71,7 +71,7 @@
             "name": "Popular-Products",
             "settings": {
                 "heading": "Popular Products",
-                "subheading": "Shop our most popular products!"
+                "subheading": "Our most popular Hot Sauces!"
             }
         }
     ]

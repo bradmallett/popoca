@@ -22,28 +22,45 @@
         <p data-on-sale class="hidden absolute font-bold text-lg text-red-600 top-2 left-2 bg-white rounded-md p-1">{{ 'content.product_badge_sale' | t}}</p>
     </div>
 
-    <h2 class="text-lg font-bold">{{ product.title }}</h2>
-    <p>{{ product.description }}</p>
-    <p data-price-el>{{ product.selected_or_first_available_variant.price | money }}</p>
+    <div class="mt-4">
+        <h2 class="text-xl text-red-600 font-bold">{{ product.title }}</h2>
+        <p data-price-el class="font-bold">{{ product.selected_or_first_available_variant.price | money }}</p>
+        <p>{{ product.description }}</p>
 
-    {% if product.variants %}
-        <ul class="flex">
-        
-        {% for variant in product.variants -%}
-            {% assign primary_url = variant.featured_media | default: product.featured_media | image_url: width: 900 %}
-            <li class="mx-2">
-                <button
-                    data-id="{{ variant.id }}"
-                    data-image="{{ primary_url }}"
-                    data-price-cents="{{ variant.price }}"
-                    data-compare-price-cents="{{ variant.compare_at_price }}"
-                    data-price-money="{{ variant.price | money}}"
-                    class="p-2 bg-gray-400 text-white"
-                >
-                        {{ variant.title }}
-                </button>
-            </li>
-        {%- endfor %}
-        </ul>
-    {% endif %}
+        {% comment %} variant buttons {% endcomment %}
+        {% if product.variants.size > 1 %}
+            <fieldset class="flex mt-4">
+                <legend class="sr-only">Choose a size</legend>
+
+                {%- for variant in product.variants -%}
+                    {% assign primary_url = variant.featured_media | default: product.featured_media | image_url: width: 900 %}
+                    <div>
+                        <input
+                            type="radio"
+                            name="variant_{{ product.id }}"
+                            value="{{ variant.id }}"
+                            id="popoca-card-{{ variant.id }}"
+                            class="sr-only peer"
+                            aria-label="{{ variant.name | default: variant.title }}"
+                            data-variant-radio
+                            data-image="{{ primary_url }}"
+                            data-price-cents="{{ variant.price }}"
+                            data-price-money="{{ variant.price | money }}"
+                            data-compare-cents="{{ variant.compare_at_price }}"
+                            {% if forloop.first %}
+                                checked
+                            {% endif %}
+                        >
+                        <label
+                            for="popoca-card-{{ variant.id }}"
+                            class="cursor-pointer p-2 border-2 border-red-600 text-red-600 bg-white font-bold rounded-md hover:border-white hover:text-white hover:bg-red-600 peer-checked:border-white peer-checked:text-white peer-checked:bg-red-600"
+                        >
+                            {{ variant.title }}
+                        </label>
+                    </div>
+                {%- endfor -%}
+
+            </fieldset>
+        {% endif %}
+    </div>
 </article>

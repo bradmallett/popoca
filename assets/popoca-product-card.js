@@ -1,7 +1,7 @@
 // @ts-nocheck 
 
-    document.addEventListener('click', (e) => {
-        const selectedVariantBtn = e.target.closest('[data-id]');
+    document.addEventListener('change', (e) => {
+        const selectedVariantBtn = e.target.closest('[data-variant-radio]');
         const selectedProductCard = e.target.closest('[data-popular-product-card]');
 
         if (!selectedVariantBtn || !selectedProductCard) return;
@@ -19,7 +19,7 @@
 
         // toggle sale badge
         const variantPrice = parseInt(selectedVariantBtn.dataset.priceCents || '0', 10);
-        const variantComparePrice = parseInt(selectedVariantBtn.dataset.comparePriceCents || '0', 10);
+        const variantComparePrice = parseInt(selectedVariantBtn.dataset.compareCents || '0', 10);
         const variantIsOnSale = variantComparePrice && variantComparePrice > variantPrice;
 
         if (onSaleEl) onSaleEl.classList.toggle('hidden', !variantIsOnSale);
