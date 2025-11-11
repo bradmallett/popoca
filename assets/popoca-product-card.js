@@ -7,12 +7,17 @@
         if (!selectedVariantBtn || !selectedProductCard) return;
         
         const featuredImage = selectedProductCard.querySelector('[data-featured-image]');
+        const secondaryImageEl = selectedProductCard.querySelector('[data-secondary-image-el]');
         const priceEl = selectedProductCard.querySelector('[data-price-el]');
         const onSaleEl = selectedProductCard.querySelector('[data-on-sale]');
 
         // update image to selected variant img
         featuredImage.src = selectedVariantBtn.dataset.image;
-        featuredImage.srcset = ''; 
+        featuredImage.srcset = '';
+
+        // update secondary image to selected variant img
+        secondaryImageEl.src = selectedVariantBtn.dataset.secondaryImage;
+        secondaryImageEl.srcset = '';
 
         // update price to selected variant price
         priceEl.textContent = selectedVariantBtn.dataset.priceMoney;
@@ -23,6 +28,7 @@
         const variantIsOnSale = variantComparePrice && variantComparePrice > variantPrice;
 
         if (onSaleEl) onSaleEl.classList.toggle('hidden', !variantIsOnSale);
+        
 
 
     })
