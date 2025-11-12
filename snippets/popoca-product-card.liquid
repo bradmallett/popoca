@@ -7,42 +7,61 @@
 
 {%- enddoc -%}
 
+{%- comment -%} id rather not type this a million times {%- endcomment -%}
+{%- liquid 
+    assign def_v = product.selected_or_first_available_variant
+    assign cap = def_v.compare_at_price | default: 0 | plus: 0
+    assign price  = def_v.price | default: 0 | plus: 0
+-%}
+
 <article
     data-popular-product-card
     data-product-id="{{ product.id }}"
-    class="w-[300px]">
+    class="w-[300px]"
+>
     <div class="w-full aspect-[2/3] overflow-hidden rounded-lg bg-gray-100 relative cursor-pointer">
-        {{ product.selected_or_first_available_variant.featured_media 
-            | image_url: width: 900 
-            | image_tag: class: 'w-full h-full object-cover z-10',
-            alt: product.title,
-            data-featured-image: 'true' 
-        }}
+        <a
+            href="{{ product.url | append: '?variant=' | append: def_v.id}}"
+            data-product-link
+        >
+            {{ def_v.featured_media 
+                | image_url: width: 900 
+                | image_tag: class: 'w-full h-full object-cover z-10',
+                alt: product.title,
+                data-featured-image: 'true' 
+            }}
 
-        {{ product.selected_or_first_available_variant.metafields.custom.secondary_image
-            | image_url: width: 900 
-            | image_tag: class: 'w-full h-full object-cover z-20 absolute inset-0 transition-opacity duration-300 opacity-0 hover:opacity-100',
-            alt: product.title,
-            data-secondary-image-el: 'true' 
-        }}
+            {{ def_v.metafields.custom.secondary_image
+                | image_url: width: 900 
+                | image_tag: class: 'w-full h-full object-cover z-20 absolute inset-0 transition-opacity duration-300 opacity-0 hover:opacity-100',
+                alt: product.title,
+                data-secondary-image-el: 'true' 
+            }}
+        </a>
 
-        <p data-on-sale class="hidden absolute font-bold text-lg text-red-600 top-2 left-2 bg-white rounded-md p-1">{{ 'content.product_badge_sale' | t}}</p>
+        <p data-on-sale class="{% if cap <= price %}hidden {% endif %}absolute font-bold text-lg text-red-600 top-2 left-2 bg-white rounded-md p-1 z-30">{{ 'content.product_badge_sale' | t}}</p>
     </div>
 
     <div class="mt-4">
-        <h2 class="text-xl text-red-600 font-bold">{{ product.title }}</h2>
-        <ul>
-            {%- for variant in product.variants -%}
+        <a
+            class="text-xl text-red-600 font-bold"
+            href="{{ product.url | append: '?variant=' | append: def_v.id}}"
+            data-product-link
+        >
+        {{ product.title }}
+    </a>
 
-            {% endfor %}
-            
-        </ul>
-        <p data-price-el class="font-bold">{{ product.selected_or_first_available_variant.price | money }}</p>
+        {% comment %} rendering heat level graphic {% endcomment %}
+        {% render 'popoca-heat-level',
+            heat : product.metafields.custom.heat_level.value | default: 0 | plus: 0
+        %}
+        
+        <p data-price-el class="font-bold my-2">{{ def_v.price | money }}</p>
         <p>{{ product.description }}</p>
 
-        {% comment %} variant buttons {% endcomment %}
+        <div class="mt-4">
         {%- if product.variants.size > 1 -%}
-            <fieldset class="flex mt-4">
+            <fieldset class="flex">
                 <legend class="sr-only">Choose a size</legend>
 
                 {%- for variant in product.variants -%}
@@ -60,6 +79,7 @@
                             name="variant_{{ product.id }}"
                             value="{{ variant.id }}"
                             id="popoca-card-{{ variant.id }}"
+                            data-variant-id="{{ variant.id }}"
                             class="sr-only peer"
                             aria-label="{{ variant.name | default: variant.title }}"
                             data-variant-radio
@@ -68,6 +88,7 @@
                             data-price-money="{{ variant.price | money }}"
                             data-compare-cents="{{ variant.compare_at_price }}"
                             data-secondary-image="{{ secondary_url }}"
+                            data-variant-url="{{ product.url | append: '?variant=' | append: variant.id}}"
                             {% if forloop.first %}
                                 checked
                             {% endif %}
@@ -83,5 +104,20 @@
 
             </fieldset>
         {% endif %}
+        </div>
+
+        {% form 'product', product, class: 'mt-4 flex items-center gap-3', data-product-form: true %}
+            {%- comment -%} Hidden variant id (updated dynamically by JS) {%- endcomment -%}
+            <input type="hidden" name="id" value="{{ def_v.id }}" data-add-variant-to-cart>
+
+            <button
+                type="submit"
+                name="add"
+                class="px-4 py-2 rounded bg-red-600 text-white font-bold"
+            >
+                {{ 'products.product.add_to_cart' | t }}
+            </button>
+        {% endform %}
+
     </div>
 </article>
