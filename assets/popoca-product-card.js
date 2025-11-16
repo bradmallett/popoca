@@ -1,11 +1,11 @@
 // @ts-nocheck 
 
     document.addEventListener('change', (e) => {
-        const selectedVariantBtn = e.target.closest('[data-variant-radio]');
         const selectedProductCard = e.target.closest('[data-popular-product-card]');
+        const selectedVariantBtn = e.target.closest('[data-variant-radio]');
 
-        if (!selectedVariantBtn || !selectedProductCard) return;
-        
+        if(!selectedProductCard || !selectedVariantBtn) return;
+
         const featuredImage = selectedProductCard.querySelector('[data-featured-image]');
         const secondaryImageEl = selectedProductCard.querySelector('[data-secondary-image-el]');
         const priceEl = selectedProductCard.querySelector('[data-price-el]');
@@ -48,7 +48,37 @@
         const inventoryIsLow = inventory <= 5;
         lowStockEl.classList.toggle('hidden', !inventoryIsLow)
 
-
         addToCartEl.value = selectedVariantBtn.dataset.variantId;
-        
+    });
+
+
+    document.addEventListener('click', (e) => {
+        const selectedProductCard = e.target.closest('[data-popular-product-card]');
+
+        if(!selectedProductCard) return;
+
+        const quantityEl = selectedProductCard.querySelector('[data-quantity]');
+        const incrementBtn = e.target.closest('[data-increment]');
+        const decrementBtn = e.target.closest('[data-decrement]');
+
+        if (!incrementBtn && !decrementBtn) return;
+
+        let quantity = parseInt(quantityEl.value, 10);
+
+        if(decrementBtn) {
+            if(quantity > 0) {
+                quantity -= 1;
+            }
+            else {
+                quanity = 0;
+            }
+        }
+
+        if(incrementBtn) quantity += 1;
+
+        quantityEl.value = quantity.toString();
     })
+
+
+
+   

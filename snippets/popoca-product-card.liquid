@@ -124,16 +124,21 @@
             {%- comment -%} Hidden variant id (updated dynamically by JS) {%- endcomment -%}
             <input type="hidden" name="id" value="{{ def_v.id }}" data-add-variant-to-cart>
 
-            <button
-                type="submit"
-                name="add"
-                class="px-4 py-2 rounded bg-red-600 text-white font-bold border-2 border-red-600 hover:bg-white hover:text-red-600"
-            >
-                {{ 'products.product.add_to_cart' | t }}
-            </button>
+            <div class="flex justify-start border-2 border-red-600 rounded-md">
+                <div class="flex justify-around p-2">
+                    <button data-decrement type="button" class="font-bold text-lg">-</button>
+                    <input data-quantity type="text" name="quantity" min="1" value="1" class="w-[30px] font-bold text-center">
+                    <button data-increment type="button" class="font-bold text-lg">+</button>
+                </div>
+                <button
+                    type="submit"
+                    name="add"
+                    class="px-4 py-2 rounded bg-red-600 text-white font-bold hover:bg-red-100 hover:text-red-600"
+                >
+                    {{ 'products.product.add_to_cart' | t }}
+                </button>
+            </div>
         {% endform %}
 
     </div>
 </article>
-
-<script>console.log('price', price)</script>
