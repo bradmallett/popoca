@@ -6,12 +6,12 @@
     %}
 
     {% if section.settings.heading != blank or section.settings.subheading != blank %}
-        <header class="text-center">
+        <header class="text-center mb-5">
             {% if section.settings.heading != blank %}
-                <h2 class="text-3xl text-red-600 font-bold uppercase">{{ section.settings.heading | escape }}</h2>
+                <h2 class="text-5xl text-orange-600 font-bold">{{ section.settings.heading | escape }}</h2>
             {% endif %}
             {% if section.settings.subheading != blank %}
-                <p class="text-red-600 font-thin text-lg">{{ section.settings.subheading | escape }}</p>
+                <p class="text-orange-600 font-thin text-lg">{{ section.settings.subheading | escape }}</p>
             {% endif %}
         </header>
     {% endif %}
@@ -22,7 +22,7 @@
                 <li class="grid__item">
                     {% render 'popoca-product-card',
                         product: product,
-                        show_price: true,
+                        show_price: section.settings.show_price,
                         max_description_length: 120
                     %}
                 </li>
@@ -64,6 +64,12 @@
             "max": 24,
             "step": 1,
             "default": 3
+        },
+        {
+            "type": "checkbox",
+            "id": "show_price",
+            "label": "Show Price",
+            "default": true
         }
     ],
     "presets": [

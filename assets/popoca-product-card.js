@@ -66,11 +66,11 @@
         let quantity = parseInt(quantityEl.value, 10);
 
         if(decrementBtn) {
-            if(quantity > 0) {
-                quantity -= 1;
+            if(quantity <= 1) {
+                quantity = 1;
             }
             else {
-                quanity = 0;
+                quantity -= 1;
             }
         }
 
