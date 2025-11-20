@@ -1,0 +1,86 @@
+
+<section class="w-full my-12">
+    {% liquid
+        assign coll = section.settings.collection
+        assign products_to_show = section.settings.products_to_show | default: 8
+    %}
+
+    {% if section.settings.heading != blank or section.settings.subheading != blank %}
+        <header class="text-center mb-5">
+            {% if section.settings.heading != blank %}
+                <h2 class="text-5xl text-orange-600 font-bold">{{ section.settings.heading | escape }}</h2>
+            {% endif %}
+            {% if section.settings.subheading != blank %}
+                <p class="text-orange-600 font-thin text-lg">{{ section.settings.subheading | escape }}</p>
+            {% endif %}
+        </header>
+    {% endif %}
+
+    {% if coll and coll.products_count > 0 %}
+        <ul class="flex flex-wrap mx-auto w-2/3 justify-center">
+            {% for product in coll.products limit: products_to_show %}
+                <li class="grid__item">
+                    {% render 'popoca-product-card',
+                        product: product,
+                        show_price: section.settings.show_price,
+                        max_description_length: 120
+                    %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="popular-products__empty">
+            <p>Select a collection in the section settings to show products.</p>
+        </div>
+    {% endif %}
+</section>
+
+
+{% schema %}
+{
+    "name": "Popular-Products",
+    "tag": "section",
+    "settings": [
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading"
+        },
+        {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection"
+        },
+        {
+            "type": "range",
+            "id": "products_to_show",
+            "label": "Products to show",
+            "min": 1,
+            "max": 24,
+            "step": 1,
+            "default": 3
+        },
+        {
+            "type": "checkbox",
+            "id": "show_price",
+            "label": "Show Price",
+            "default": true
+        }
+    ],
+    "presets": [
+        {
+            "name": "Popular-Products",
+            "settings": {
+                "heading": "Popular Products",
+                "subheading": "Our most popular Hot Sauces!"
+            }
+        }
+    ]
+}
+
+{% endschema %}
