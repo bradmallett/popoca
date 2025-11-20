@@ -9,3 +9,5 @@ package-lock.json
 
 # Shopify CLI cache
 .shopify/
+
+assets/app-output.css
