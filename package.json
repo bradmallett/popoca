@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "tailwind": "postcss ./assets/app-custom.css -o ./assets/app-output.css --watch"
+    "tailwind": "npx tailwindcss -i ./assets/app-custom.css -o ./assets/app-output.css --watch"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
