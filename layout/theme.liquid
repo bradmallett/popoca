@@ -68,13 +68,12 @@
       {% render 'quick-add-modal' %}
     {% endif %}
 
-   <script src="{{ 'popoca-product-card.js' | asset_url }}" defer></script>
 
 
 
       {% comment %} rendering cart here for now {% endcomment %}
       {% section 'popoca-cart-drawer' %}
-
-
+   <script src="{{ 'popoca-product-card.js' | asset_url }}" defer></script>
+   <script src="{{ 'popoca-cart-drawer.js' | asset_url }}" defer></script>
   </body>
 </html>
