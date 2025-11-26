@@ -17,57 +17,118 @@ document.querySelectorAll('form[action="/cart/add"]').forEach((form) => {
             return;
         }
 
-        // fetch new cart section with added item and create the html
-        const newCartSection = await fetch(
-        window.Shopify.routes.root +
-            "?section_id=popoca-cart-drawer&sections_url=/cart"
-        );
-
-        const newSectionHTML = await newCartSection.text();
-        const html = document.createElement("div");
-        html.innerHTML = newSectionHTML;
-
-
-        // Replace existing drawer DOM
-        const newDrawer = html.querySelector("#shopify-section-popoca-cart-drawer");
-        const currentDrawer = document.querySelector("#shopify-section-popoca-cart-drawer");
-
-        if (newDrawer && currentDrawer) {
-        currentDrawer.replaceWith(newDrawer);
-        }
+       await fetchNewCart();
     })
 })
 
-// update quanity for cart item
-document.querySelectorAll('[data-cart-item-decrement], [data-cart-item-increment]').forEach((button) => {
-    button.addEventListener('click', async()=> {
 
-        let quantity = parseInt(button.dataset.itemCurrentQuantity, 10);
+//update quantity for cart item
+document.addEventListener('click', async (e) => {
+    const cartItem = e.target.closest('[data-cart-item]');
+    const cartItemBtn = e.target.closest('[data-quantity-btn]');
 
-        if(!button.dataset.cartItemDecrement && !button.dataset.cartItemIncrement) return;
+    if(!cartItem || !cartItemBtn) return;
 
-        if(button.dataset.cartItemDecrement) {
-            quantity -= 1;
-        }
+    const quantityEl = cartItem.querySelector('input');
+    let quantity = parseInt(quantityEl.value, 10);
 
-        if(button.dataset.cartItemIncrement) {
-            quantity += 1;
-        }
+    if(cartItemBtn.dataset.cartItemDecrement) {
+        quantity -= 1;
+    }
 
-        // submit form with ajax
-        const res = await fetch(window.Shopify.routes.root + 'cart/change.js', {
-            method: 'POST',
-            body: {              
-                'id': button.dataset.itemKey,
-                'quantity': quantity
-            }
-            
-        })
+    if(cartItemBtn.dataset.cartItemIncrement) {
+        quantity += 1;
+    }
 
-        if (!res.ok) {
-            console.error("Add to cart failed", await res.text());
-            return;
-        }
+    const formData = new FormData();
+    formData.append('id', quantityEl.dataset.itemKey);
+    formData.append('quantity', quantity);
+
+    // submit quantity form with ajax
+    const res = await fetch(window.Shopify.routes.root + 'cart/change.js', {
+        method: 'POST',
+        body: formData
         
     })
-})
+
+    if (!res.ok) {
+        console.error("Add to cart failed", await res.text());
+        return;
+    }
+
+    await fetchNewCart();
+});
+
+
+
+
+
+
+
+
+
+
+//delete item from cart
+document.addEventListener('click', async (e) => {
+    const cartItem = e.target.closest('[data-cart-item]');
+    const deleteItem = e.target.closest('[data-delete-cart-item]');
+
+    if(!cartItem || !cartItemBtn) return;
+
+    const quantityEl = cartItem.querySelector('input');
+    let quantity = parseInt(quantityEl.value, 10);
+
+    if(cartItemBtn.dataset.cartItemDecrement) {
+        quantity -= 1;
+    }
+
+    if(cartItemBtn.dataset.cartItemIncrement) {
+        quantity += 1;
+    }
+
+    const formData = new FormData();
+    formData.append('id', quantityEl.dataset.itemKey);
+    formData.append('quantity', quantity);
+
+    // submit quantity form with ajax
+    const res = await fetch(window.Shopify.routes.root + 'cart/change.js', {
+        method: 'POST',
+        body: formData
+        
+    })
+
+    if (!res.ok) {
+        console.error("Add to cart failed", await res.text());
+        return;
+    }
+
+    await fetchNewCart();
+});
+
+
+
+
+
+
+
+
+async function fetchNewCart() {
+    // fetch new cart section with added item and create the html
+    const newCartSection = await fetch(
+    window.Shopify.routes.root +
+        "?section_id=popoca-cart-drawer&sections_url=/cart"
+    );
+
+    const newSectionHTML = await newCartSection.text();
+    const html = document.createElement("div");
+    html.innerHTML = newSectionHTML;
+
+
+    // Replace existing drawer DOM
+    const newDrawer = html.querySelector("#shopify-section-popoca-cart-drawer");
+    const currentDrawer = document.querySelector("#shopify-section-popoca-cart-drawer");
+
+    if (newDrawer && currentDrawer) {
+    currentDrawer.replaceWith(newDrawer);
+    }
+}
