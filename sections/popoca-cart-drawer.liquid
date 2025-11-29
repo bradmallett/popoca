@@ -4,12 +4,12 @@
 {%- endcomment -%}
 
 
-<section aria-label="Cart Drawer" class="p-3 absolute top-4 right-4 w-[450px] z-50 bg-gray-100 rounded-md shadow-2xl ">
+<section data-popoca-cart-drawer aria-label="Cart Drawer" class="p-3 w-[450px] z-50 bg-gray-100 rounded-md shadow-2xl fixed top-4 cart-closed transition-all duration-300 ease-in-out">
 
     {%- comment -%} title and close button {%- endcomment -%}
     <div class="relative flex items-center my-3">
         <h2 class="absolute left-1/2 -translate-x-1/2 font-semibold text-xl">{{ section.settings.header | escape}} ({{ cart.item_count }})</h2>
-        <button type="button" class="ml-auto font-bold text-2xl cursor-pointer">
+        <button data-close-cart-drawer type="button" class="ml-auto font-bold text-2xl cursor-pointer">
             <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#1f2937" class="size-6 hover:stroke-orange-600">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>

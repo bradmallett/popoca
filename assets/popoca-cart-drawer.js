@@ -1,4 +1,3 @@
-
 // add item to cart and update dom with new item
 document.querySelectorAll('form[action="/cart/add"]').forEach((form) => {
     form.addEventListener('submit', async (e) => {
@@ -17,9 +16,62 @@ document.querySelectorAll('form[action="/cart/add"]').forEach((form) => {
             return;
         }
 
-       await fetchNewCart();
+        await fetchNewCart();
+        openCartDrawer();
+      
     })
+});
+
+
+
+// closing the cart
+document.addEventListener('click', (e) => {
+    const cart = getDrawer();
+    const clickedCloseCartBtn = e.target.closest('[data-close-cart-drawer]');
+    const clickedInsideCart = e.target.closest('[data-popoca-cart-drawer]');
+
+    // close if clicked the close button
+    if(clickedCloseCartBtn) {
+        closeCartDrawer();
+    }
+
+    // close if clicked outside the cart
+    if(!clickedInsideCart && cart?.classList.contains('cart-open')) {
+        closeCartDrawer();
+    }
 })
+
+
+
+
+
+
+
+function openCartDrawer() {
+    const cartDrawer = getDrawer();
+    if(!cartDrawer) return;
+
+    // telling the dom to read/notice the new element so it's able to transition in css
+    void cartDrawer.offsetWidth;
+
+    cartDrawer.classList.remove('cart-closed');
+    cartDrawer.classList.add('cart-open');
+}
+
+
+
+function getDrawer() {
+    return document.querySelector('[data-popoca-cart-drawer]');
+}
+
+
+function closeCartDrawer() {
+    const drawer = getDrawer();
+    if(!drawer) return;
+
+    drawer.classList.remove('cart-open');
+    drawer.classList.add('cart-closed');
+}
 
 
 //update quantity for cart item
@@ -48,7 +100,6 @@ document.addEventListener('click', async (e) => {
     const res = await fetch(window.Shopify.routes.root + 'cart/change.js', {
         method: 'POST',
         body: formData
-        
     })
 
     if (!res.ok) {
@@ -57,6 +108,7 @@ document.addEventListener('click', async (e) => {
     }
 
     await fetchNewCart();
+    openCartDrawer();
 });
 
 
@@ -73,18 +125,10 @@ document.addEventListener('click', async (e) => {
     const cartItem = e.target.closest('[data-cart-item]');
     const deleteItem = e.target.closest('[data-delete-cart-item]');
 
-    if(!cartItem || !cartItemBtn) return;
+    if(!cartItem || !deleteItem) return;
 
     const quantityEl = cartItem.querySelector('input');
-    let quantity = parseInt(quantityEl.value, 10);
-
-    if(cartItemBtn.dataset.cartItemDecrement) {
-        quantity -= 1;
-    }
-
-    if(cartItemBtn.dataset.cartItemIncrement) {
-        quantity += 1;
-    }
+    let quantity = 0;
 
     const formData = new FormData();
     formData.append('id', quantityEl.dataset.itemKey);
@@ -94,7 +138,6 @@ document.addEventListener('click', async (e) => {
     const res = await fetch(window.Shopify.routes.root + 'cart/change.js', {
         method: 'POST',
         body: formData
-        
     })
 
     if (!res.ok) {
@@ -103,6 +146,7 @@ document.addEventListener('click', async (e) => {
     }
 
     await fetchNewCart();
+    openCartDrawer();
 });
 
 

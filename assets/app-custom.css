@@ -4,3 +4,18 @@
 @tailwind utilities;
 
 /* then any custom CSS you want after */
+
+
+
+
+
+/* ------CUSTOM SHOPPING CART------- */
+/* Closed state (offscreen) */
+.cart-closed {
+    @apply right-[-400px] opacity-20;
+}
+
+/* Open state */
+.cart-open {
+    @apply right-4 opacity-100;
+}
