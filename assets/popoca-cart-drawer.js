@@ -24,6 +24,25 @@ document.querySelectorAll('form[action="/cart/add"]').forEach((form) => {
 
 
 
+// open cart instead of routing to cart page
+document.querySelectorAll('a[href="/cart"]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const cart = getDrawer();
+        
+        if(!cart) return;
+        
+        cart.classList.remove('popoca-cart-closed');
+        cart.classList.add('popoca-cart-open');
+
+        console.log(cart.classList)
+    })
+})
+
+
+
 // closing the cart
 document.addEventListener('click', (e) => {
     const cart = getDrawer();
@@ -36,14 +55,10 @@ document.addEventListener('click', (e) => {
     }
 
     // close if clicked outside the cart
-    if(!clickedInsideCart && cart?.classList.contains('cart-open')) {
+    if(!clickedInsideCart && cart?.classList.contains('popoca-cart-open')) {
         closeCartDrawer();
     }
 })
-
-
-
-
 
 
 
@@ -54,8 +69,8 @@ function openCartDrawer() {
     // telling the dom to read/notice the new element so it's able to transition in css
     void cartDrawer.offsetWidth;
 
-    cartDrawer.classList.remove('cart-closed');
-    cartDrawer.classList.add('cart-open');
+    cartDrawer.classList.remove('popoca-cart-closed');
+    cartDrawer.classList.add('popoca-cart-open');
 }
 
 
@@ -69,8 +84,8 @@ function closeCartDrawer() {
     const drawer = getDrawer();
     if(!drawer) return;
 
-    drawer.classList.remove('cart-open');
-    drawer.classList.add('cart-closed');
+    drawer.classList.remove('popoca-cart-open');
+    drawer.classList.add('popoca-cart-closed');
 }
 
 
@@ -115,11 +130,6 @@ document.addEventListener('click', async (e) => {
 
 
 
-
-
-
-
-
 //delete item from cart
 document.addEventListener('click', async (e) => {
     const cartItem = e.target.closest('[data-cart-item]');
@@ -148,10 +158,6 @@ document.addEventListener('click', async (e) => {
     await fetchNewCart();
     openCartDrawer();
 });
-
-
-
-
 
 
 

@@ -11,11 +11,11 @@
 
 /* ------CUSTOM SHOPPING CART------- */
 /* Closed state (offscreen) */
-.cart-closed {
+.popoca-cart-closed {
     @apply right-[-400px] opacity-20;
 }
 
 /* Open state */
-.cart-open {
+.popoca-cart-open {
     @apply right-4 opacity-100;
 }
