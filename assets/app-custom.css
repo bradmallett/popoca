@@ -12,7 +12,7 @@
 /* ------CUSTOM SHOPPING CART------- */
 /* Closed state (offscreen) */
 .popoca-cart-closed {
-    @apply right-[-450px] opacity-00;
+    @apply right-[-450px] opacity-0;
 }
 
 /* Open state */
