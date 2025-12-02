@@ -17,5 +17,5 @@
 
 /* Open state */
 .popoca-cart-open {
-    @apply right-4 opacity-100;
+    @apply right-0 opacity-100;
 }
