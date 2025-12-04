@@ -7,6 +7,7 @@
 <header-actions
   {{- block.shopify_attributes -}}
 >
+  {%- comment -%} 
   {% if shop.customer_accounts_enabled %}
     {% render 'account-popover' %}
     {% render 'account-drawer' %}
@@ -23,7 +24,7 @@
     >
       {% render 'cart-icon-component' %}
     </a>
-  {% endif %}
+  {%- endif -%} {%- endcomment -%}
 </header-actions>
 
 {% stylesheet %}

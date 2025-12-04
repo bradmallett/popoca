@@ -33,6 +33,8 @@
       {%- render 'theme-editor' -%}
     {% endif %}
 
+    {{ 'fonts.css' | asset_url | stylesheet_tag }}
+
     {{ content_for_header }}
   </head>
 
@@ -68,11 +70,9 @@
       {% render 'quick-add-modal' %}
     {% endif %}
 
-
-
-
-      {% comment %} rendering cart here for now {% endcomment %}
-      {% section 'popoca-cart-drawer' %}
+    {% render 'popoca-cart-button' %}
+    {% section 'popoca-cart-drawer' %}
+    
    <script src="{{ 'popoca-product-card.js' | asset_url }}" defer></script>
    <script src="{{ 'popoca-cart-drawer.js' | asset_url }}" defer></script>
   </body>
