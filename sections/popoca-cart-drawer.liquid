@@ -7,13 +7,13 @@
 <section 
     data-popoca-cart-drawer 
     aria-label="Cart Drawer" 
-    class="flex flex-col p-3 w-[450px] h-screen z-50 bg-gray-100 shadow-2xl shadow-slate-800 fixed top-0 popoca-cart-closed transition-all duration-300 ease-in-out"
+    class="flex flex-col p-3 w-[90%] md:w-[450px] h-screen z-50 bg-gray-100 shadow-2xl shadow-slate-800 fixed top-0 popoca-cart-closed transition-all duration-300 ease-in-out"
     data-cart-count="{{ cart.item_count }}"
 >
 
     {%- comment -%} title and close button {%- endcomment -%}
     <div class="relative flex items-center my-3">
-        <h2 class="absolute left-1/2 -translate-x-1/2 font-semibold text-xl uppercase">{{ section.settings.header | escape}} ({{ cart.item_count }})</h2>
+        <h2 class="absolute left-1/2 -translate-x-1/2 font-squada text-2xl text-orange-600 uppercase">{{ section.settings.header | escape}} ({{ cart.item_count }})</h2>
         <button data-close-cart-drawer type="button" class="ml-auto font-bold text-2xl cursor-pointer">
             <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#1f2937" class="size-6 hover:stroke-orange-600">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -37,8 +37,8 @@
                         </div>
                     </a>
 
-                    <div class="text-sm">
-                        <p class="font-bold">{{ item.product.title }}</p>
+                    <div class="">
+                        <p class="font-squada text-lg text-orange-600">{{ item.product.title }}</p>
                         <p class="text-xs">{{ item.variant.title }}</p>
                         <div class="inline-flex items-center text-xs font-bold mt-3">
                             <button
@@ -82,7 +82,18 @@
 
 
         <div class="mt-auto bottom-3 border-t border-gray-300">
-            {%- comment -%} subtotal {%- endcomment -%}
+
+            {%- assign threshold = 5000 -%}
+            {% assign remaining = threshold | minus: cart.items_subtotal_price %}
+
+            {% if remaining <= 0 %}
+                <p class="text-green-600 font-bold">You’ve earned free shipping!</p>
+            {% else %}
+                <p class="text-orange-600">
+                    Spend {{ remaining | money }} more to unlock free shipping.
+                </p>
+            {% endif %}
+            
             <div class="flex justify-between font-bold my-4">
                 <p class="">SUBTOTAL</p>
                 <p class="">{{ cart.items_subtotal_price | money }}</p>
@@ -91,7 +102,7 @@
             <button 
                 type="submit"
                 name="checkout"
-                class="w-full py-3 font-bold text-xl cursor-pointer uppercase border-2 border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-gray-100"
+                class="w-full py-3 font-squada text-3xl cursor-pointer uppercase border-2 border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-gray-100"
             >
                 {{ 'content.checkout' | t }}
             </button>        

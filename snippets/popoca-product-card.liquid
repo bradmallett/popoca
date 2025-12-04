@@ -18,7 +18,7 @@
 <article
     data-popular-product-card
     data-product-id="{{ product.id }}"
-    class="w-[325px]"
+    class="w-[90%] md:w-[325px] shadow-md shadow-gray-400 bg-gray-50"
 >
     <div class="w-full aspect-[2/3] overflow-hidden bg-gray-100 relative cursor-pointer">
         <a
@@ -27,21 +27,21 @@
         >
             {{ def_v.featured_media 
                 | image_url: width: 900 
-                | image_tag: class: 'w-full h-full object-cover z-10',
+                | image_tag: class: 'w-full h-full object-cover',
                 alt: product.title,
                 data-featured-image: 'true' 
             }}
 
             {{ def_v.metafields.custom.secondary_image
                 | image_url: width: 900 
-                | image_tag: class: 'w-full h-full object-cover z-20 absolute inset-0 transition-opacity duration-300 opacity-0 hover:opacity-100',
+                | image_tag: class: 'w-full h-full object-cover z-10 absolute inset-0 transition-opacity duration-300 opacity-0 hover:opacity-100',
                 alt: product.title,
                 data-secondary-image-el: 'true' 
             }}
         </a>
 
         {%- comment -%} show / hide on sale info {%- endcomment -%}
-        <div data-on-sale class="{% if cap <= price %}hidden {% endif %}absolute top-0 left-0 p-1 z-30 text-white text-center font-bold bg-orange-600">
+        <div data-on-sale class="{% if cap <= price %}hidden {% endif %}absolute top-0 left-0 p-1 z-20 text-white text-center font-bold bg-orange-600">
             <p data-sale-badge class="text-xl">{{ 'content.product_badge_sale' | t}}</p>
 
             {%- comment -%} calculating percentage off {%- endcomment -%}
@@ -50,12 +50,12 @@
         </div>
 
         {%- comment -%} show / hide low stock {%- endcomment -%}
-        <div data-low-stock class="{% if inventory > 5 %}hidden {% endif %}text-white text-center z-30 absolute bottom-0 left-0 w-full bg-orange-600 p-1 font-bold">
+        <div data-low-stock class="{% if inventory > 5 %}hidden {% endif %}text-white text-center z-20 absolute bottom-0 left-0 w-full bg-orange-600 p-1 font-bold">
             <p>{{ 'content.inventory_low_stock' | t}}</p>
         </div>
 
         {% comment %} rendering heat level graphic {% endcomment %}
-         <div class="absolute top-1 right-1 z-30"> 
+         <div class="absolute top-1 right-1 z-20"> 
              {% render 'popoca-heat-level',
                  heat : product.metafields.custom.heat_level.value | default: 0 | plus: 0
              %}
@@ -64,7 +64,7 @@
 
     <div class="mt-2 p-2">
         <a
-            class="text-xl text-orange-600 font-bold uppercase"
+            class="text-2xl text-orange-600 uppercase font-squada"
             href="{{ product.url | append: '?variant=' | append: def_v.id}}"
             data-product-link
         >
@@ -113,7 +113,7 @@
                             >
                             <label
                                 for="popoca-card-{{ variant.id }}"
-                                class="text-xs cursor-pointer p-1 border border-orange-600 text-orange-600 font-bold hover:text-white hover:bg-orange-600 peer-checked:text-white peer-checked:bg-orange-600"
+                                class="font-squada text-lg cursor-pointer p-1 border border-orange-600 text-orange-600 font-bold hover:text-white hover:bg-orange-600 peer-checked:text-white peer-checked:bg-orange-600"
                             >
                                 {{ variant.title }}
                             </label>
@@ -135,7 +135,7 @@
                 <button
                     type="submit"
                     name="add"
-                    class="uppercase font-bold border-2 text-orange-600 border-orange-600 hover:bg-orange-600 hover:text-gray-50 p-2"
+                    class="uppercase font-squada text-lg border-2 text-orange-600 border-orange-600 hover:bg-orange-600 hover:text-gray-50 p-2"
                 >
                     {{ 'products.product.add_to_cart' | t }}
                 </button>

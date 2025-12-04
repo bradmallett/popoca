@@ -4296,3 +4296,9 @@ text-component {
     font-size: max(1rem, 100%);
   }
 }
+
+
+
+body:has(.header[transparent]) #header-group > .header-section {
+  z-index: 30 !important;
+}
