@@ -8,22 +8,22 @@
     {% if section.settings.heading != blank or section.settings.subheading != blank %}
         <header class="text-center mb-5">
             {% if section.settings.heading != blank %}
-                <h2 class="text-5xl text-orange-600 font-bold">{{ section.settings.heading | escape }}</h2>
+                <h2 class="text-5xl text-orange-600 font-squada uppercase">{{ section.settings.heading | escape }}</h2>
             {% endif %}
             {% if section.settings.subheading != blank %}
-                <p class="text-orange-600 font-thin text-lg">{{ section.settings.subheading | escape }}</p>
+                <p class="text-orange-600 font-thin text-lg mt-1 md:mt-3">{{ section.settings.subheading | escape }}</p>
             {% endif %}
         </header>
     {% endif %}
 
     {% if coll and coll.products_count > 0 %}
-        <ul class="flex flex-wrap mx-auto w-2/3 justify-center">
+        <ul class="flex flex-wrap mx-auto justify-center">
             {% for product in coll.products limit: products_to_show %}
-                <li class="grid__item">
+                <li class="m-4 flex justify-center align-middle">
                     {% render 'popoca-product-card',
                         product: product,
                         show_price: section.settings.show_price,
-                        max_description_length: 120
+                        max_description_length: 100
                     %}
                 </li>
             {% endfor %}

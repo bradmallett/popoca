@@ -1,0 +1,138 @@
+{%- comment -%}
+  Popoca custom cart drawer - built from scratch for learning.
+  This will be wired to Ajax cart logic in popoca-cart-drawer.js
+{%- endcomment -%}
+
+
+<section 
+    data-popoca-cart-drawer 
+    aria-label="Cart Drawer" 
+    class="flex flex-col p-3 w-[90%] md:w-[450px] h-screen z-50 bg-gray-100 shadow-2xl shadow-slate-800 fixed top-0 popoca-cart-closed transition-all duration-300 ease-in-out"
+    data-cart-count="{{ cart.item_count }}"
+>
+
+    {%- comment -%} title and close button {%- endcomment -%}
+    <div class="relative flex items-center my-3">
+        <h2 class="absolute left-1/2 -translate-x-1/2 font-squada text-2xl text-orange-600 uppercase">{{ section.settings.header | escape}} ({{ cart.item_count }})</h2>
+        <button data-close-cart-drawer type="button" class="ml-auto font-bold text-2xl cursor-pointer">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#1f2937" class="size-6 hover:stroke-orange-600">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    {%- if cart.item_count > 0 -%}
+        <h2 class="text-green-600 font-medium text-center bg-green-100 p-4 border-b border-gray-300 mb-3"><span class="font-semibold">Good Choice!</span> Here are your products:</h2>
+        {%- else -%}
+            <p class="text-red-600 font-medium text-center bg-red-100 p-4 border-b border-gray-300 mb-3">You don't have any items in the cart.</p>
+    {%- endif -%}
+
+    {% form 'cart', cart, class: 'flex flex-1 flex-col overflow-hidden' %}
+        <div class="flex-1 overflow-y-auto space-y-3">
+            {% for item in cart.items %}
+                <div data-cart-item="true" class="relative w-full flex items-center bg-white shadow-gray-200 shadow-sm border-l-4 border-orange-600">
+                    <a href="{{ item.url }}">
+                        <div class="w-[90px] aspect-[1/1] overflow-hidden bg-gray-100 z-50">
+                            {{ item.image | image_url: width: 200 | image_tag: class: 'w-full h-full object-cover' }}
+                        </div>
+                    </a>
+
+                    <div class="">
+                        <p class="font-squada text-lg text-orange-600">{{ item.product.title }}</p>
+                        <p class="text-xs">{{ item.variant.title }}</p>
+                        <div class="inline-flex items-center text-xs font-bold mt-3">
+                            <button
+                                data-cart-item-decrement="true"
+                                data-quantity-btn="true"
+                                type="button"
+                                class="flex items-center justify-center h-6 w-6 text-orange-600 border border-orange-600 hover:bg-orange-600 hover:text-white"
+                            >–</button>
+
+                            <div class="h-6 w-6 text-center focus:outline-none text-orange-600 mx-1 flex justify-center align-middle border-y border-orange-600">
+                                <input
+                                    data-item-key="{{ item.key }}"
+                                    value="{{ item.quantity }}"
+                                    class="w-full text-center focus:outline-none"
+                                    readonly
+                                    inputmode="numeric"
+                                >
+                            </div>
+
+                            <button
+                                data-cart-item-increment="true"
+                                data-quantity-btn="true"
+                                type="button"
+                                class="flex items-center justify-center h-6 w-6 text-orange-600 border border-orange-600 hover:bg-orange-600 hover:text-gray-50"
+                            >+</button>
+                        </div>
+                    </div>
+
+                    <h3 class="absolute bottom-2 right-2">{{ item.final_line_price | money }}</h3>
+
+                    {%- comment -%} delete from cart {%- endcomment -%}
+                    <button data-delete-cart-item type="button" class="absolute top-2 right-2 font-bold cursor-pointer">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#1f2937" class="size-4 hover:stroke-orange-600">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                        </svg>
+                    </button>
+
+                </div>
+            {% endfor %}
+        </div>
+
+
+        <div class="mt-auto bottom-3 border-t border-gray-300">
+
+            {%- assign threshold = 5000 -%}
+            {% assign remaining = threshold | minus: cart.items_subtotal_price %}
+
+            {% if remaining <= 0 %}
+                <p class="text-green-600 font-bold">You’ve earned free shipping!</p>
+            {% else %}
+                <p class="text-orange-600">
+                    Spend {{ remaining | money }} more to unlock free shipping.
+                </p>
+            {% endif %}
+            
+            <div class="flex justify-between font-bold my-4">
+                <p class="">SUBTOTAL</p>
+                <p class="">{{ cart.items_subtotal_price | money }}</p>
+            </div>
+    
+            <button 
+                type="submit"
+                name="checkout"
+                class="w-full py-3 font-squada text-3xl cursor-pointer uppercase border-2 border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-gray-100"
+            >
+                {{ 'content.checkout' | t }}
+            </button>        
+
+        </div>
+
+
+    {% endform %}
+</section>
+
+
+
+{% schema %}
+    {
+        "name": "Cart Drawer",
+        "settings": [
+                {
+                    "type": "text",
+                    "id": "header",
+                    "label": "Cart heading",
+                    "default": "Your Cart"
+                }
+            ],
+        "presets": [
+                {
+                    "name": "Cart"
+                }
+            ]
+    }
+
+{% endschema %}
+
+

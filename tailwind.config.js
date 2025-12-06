@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./**/*.liquid'],
+  content: [
+    './**/*.liquid',
+    './assets/**/*.js',
+  ],
   theme: {
     extend: {
       screens: {
@@ -9,6 +12,9 @@ module.exports = {
         lg: '1024px',
         xl: '1280px',
         '2xl': '1536px',
+      },
+      fontFamily: {
+        squada: ['"Squada One"', 'sans-serif'],
       },
     },
   },

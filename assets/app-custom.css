@@ -4,3 +4,18 @@
 @tailwind utilities;
 
 /* then any custom CSS you want after */
+
+
+
+
+
+/* ------CUSTOM SHOPPING CART------- */
+/* Closed state (offscreen) */
+.popoca-cart-closed {
+    @apply right-[-450px] opacity-0;
+}
+
+/* Open state */
+.popoca-cart-open {
+    @apply right-0 opacity-100;
+}
