@@ -1,0 +1,73 @@
+
+<section class="w-full flex h-screen gap-0">
+    <div class="hidden md:!block md:w-[70%]">
+        {{ section.settings.image_1 
+            | image_url: width: 900 
+            | image_tag: class: 'block w-full h-full object-cover',
+            alt: "Image of Popoca Hot Sauce products"
+        }}
+    </div>
+
+    <div class="w-full md:w-[30%] relative flex justify-center items-center">
+        <div class="font-squada z-20 text-left p-3">
+            <p class="text-7xl text-orange-600">{{ section.settings.heading }}</p>
+            <p class="text-3xl text-white">{{ section.settings.tagline }}</p>
+            <p class="font-sans text-white font-bold max-w-[160px]">{{ section.settings.description }}</p>
+            <button class="text-white font-bold text-4xl p-1 mt-5 border-2 border-white hover:border-orange-600 hover:text-orange-600 transition-all ease-in-out">OUR SAUCES</button>
+        </div>
+
+        {{ section.settings.image_2 
+            | image_url: width: 900 
+            | image_tag: class: 'w-full h-full object-cover absolute saturate-0',
+            alt: "Image of peppers being grown"
+        }}
+
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/80"></div>
+    </div>
+</section>
+
+
+{% schema %}
+{
+    "name": "Popoca Hero",
+    "tag": "section",
+    "settings": [
+        {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Image 1"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Image 2"
+        },
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+        },
+        {
+            "type": "text",
+            "id": "tagline",
+            "label": "Tagline"
+        },
+        {
+            "type": "text",
+            "id": "description",
+            "label": "Description"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Popoca-Hero",
+            "settings": {
+                "heading": "HOT SAUCE",
+                "tagline": "THE WAY IT SHOULD BE",
+                "description": "Made the traditional way - fresh ingredients and big flavor."
+            }
+        }
+    ]
+}
+
+{% endschema %}
