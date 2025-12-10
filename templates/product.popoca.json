@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "popoca-main-product",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

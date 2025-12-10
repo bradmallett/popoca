@@ -1,0 +1,70 @@
+{%- liquid 
+    assign def_v = product.selected_or_first_available_variant
+    assign cap = def_v.compare_at_price | default: 0 | plus: 0
+    assign price = def_v.price | default: 0 | plus: 0
+    assign inventory = def_v.inventory_quantity | default: 0 | plus: 0
+-%}
+
+
+<div class="w-full m-10 flex">
+    <div class="flex-1">
+        <div class="w-full aspect-[1/1] overflow-hidden bg-gray-100 relative">
+            {{ def_v.featured_media 
+                | image_url: width: 900 
+                | image_tag: class: 'w-full h-full object-cover',
+                alt: product.title,
+                data-featured-image: 'true' 
+            }}
+
+            {%- comment -%} show / hide on sale info {%- endcomment -%}
+            <div data-on-sale class="{% if cap <= price %}hidden {% endif %}absolute top-0 left-0 p-1 z-20 text-white text-center bg-orange-600">
+                <p data-sale-badge class="text-5xl font-squada">{{ 'content.product_badge_sale' | t}}</p>
+
+                {%- comment -%} calculating percentage off {%- endcomment -%}
+                {%- assign percent_off = cap | minus: price | times: 100.0 | divided_by: cap | round -%}
+                <p data-percent-off class="">{{ percent_off }}% OFF</p>
+            </div>
+
+            {%- comment -%} show / hide low stock {%- endcomment -%}
+            <div data-low-stock class="{% if inventory > 5 %}hidden {% endif %}text-white text-center z-20 absolute bottom-0 left-0 w-full bg-orange-600 p-1 font-bold">
+                <p>{{ 'content.inventory_low_stock' | t}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-1">
+        <h1 class="font-squada text-8xl text-orange-600 uppercase">{{ product.title }}</h1>
+
+        <div class=""> 
+             {% render 'popoca-heat-level-pdp',
+                 heat : product.metafields.custom.heat_level.value | default: 0 | plus: 0
+             %}
+         </div>
+
+        <p class="w-[90%] max-w-[500px] text-gray-800 text-lg">{{ product.description | strip_html}}</p>
+        <h2 class="font-squada text-4xl text-orange-600 border-b-2 border-orange-600 inline">INGREDIENTS</h2>
+        <p class="font-squada text-xl text-orange-600 w-[90%] max-w-[350px]">{{ product.metafields.custom.ingredients }}</p>
+        <div class="inline-flex items-end border-b-2 border-gray-800 font-squada">
+            <p class="line-through text-xl text-gray-400">{{ cap | money }}</p>
+            <p class="text-gray-800 text-3xl ml-4">{{ price | money }}</p>
+        </div>
+        
+    </div>
+
+</div>
+
+
+
+{% schema %}
+{
+    "name": "Popoca-Main-Product",
+    "tag": "section",
+    "settings": [],
+    "presets": [
+        {
+            "name": "Popoca-Main-Product"
+        }
+    ]
+}
+
+{% endschema %}
