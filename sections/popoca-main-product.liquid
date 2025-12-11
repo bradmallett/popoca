@@ -6,33 +6,73 @@
 -%}
 
 
-<div class="w-full m-10 flex">
-    <div class="flex-1">
+<div class="w-full max-w-[1600px] mt-10 mx-auto flex">
+
+
+    
+    <div class="flex-1 flex gap-0">
+        {%- comment -%} PHOTO LIBRARY FOR PRODUCT/VARIANT {%- endcomment -%}
+        <div class="w-[100px] ml-2" data-thumbnail-contain="true">
+            <button
+                class="w-[70px] aspect-[1/1] my-1 mx-auto bg-gray-200 thumbnailSelected transition-all ease-in-out"
+                data-thumb-link="{{ def_v.featured_media | image_url: width: 900 }}"
+                data-primary-thumb-btn
+                data-thumbnail-btn
+            >
+                    {{ def_v.featured_media 
+                        | image_url: width: 200 
+                        | image_tag: class: 'w-full h-full object-cover object-bottom',
+                        alt: def_v.title,
+                        data-featured-image-thumb: 'true'
+                    }}
+            </button>
+            
+            {%- if def_v.metafields.custom.secondary_image -%}
+                <button 
+                    class="w-[70px] aspect-[1/1] my-1 mx-auto bg-gray-200 thumbnailNotSelected transition-all ease-in-out"
+                    data-thumb-link="{{ def_v.metafields.custom.secondary_image | image_url: width: 900 }}"
+                    data-secondary-thumb-btn
+                    data-thumbnail-btn
+                >
+                        {{ def_v.metafields.custom.secondary_image 
+                            | image_url: width: 200 
+                            | image_tag: class: 'w-full h-full object-cover object-bottom',
+                            alt: def_v.title,
+                            data-secondary-image-thumb: 'true'
+                        }}
+                </button>
+            {%- endif -%}
+        </div>
+
+
         <div class="w-full aspect-[1/1] overflow-hidden bg-gray-100 relative">
             {{ def_v.featured_media 
                 | image_url: width: 900 
-                | image_tag: class: 'w-full h-full object-cover',
+                | image_tag: class: 'w-full h-full object-cover object-bottom',
                 alt: product.title,
-                data-featured-image: 'true' 
+                data-pdp-featured-image: 'true'
             }}
-
-            {%- comment -%} show / hide on sale info {%- endcomment -%}
-            <div data-on-sale class="{% if cap <= price %}hidden {% endif %}absolute top-0 left-0 p-1 z-20 text-white text-center bg-orange-600">
-                <p data-sale-badge class="text-5xl font-squada">{{ 'content.product_badge_sale' | t}}</p>
-
-                {%- comment -%} calculating percentage off {%- endcomment -%}
-                {%- assign percent_off = cap | minus: price | times: 100.0 | divided_by: cap | round -%}
-                <p data-percent-off class="">{{ percent_off }}% OFF</p>
-            </div>
-
-            {%- comment -%} show / hide low stock {%- endcomment -%}
-            <div data-low-stock class="{% if inventory > 5 %}hidden {% endif %}text-white text-center z-20 absolute bottom-0 left-0 w-full bg-orange-600 p-1 font-bold">
-                <p>{{ 'content.inventory_low_stock' | t}}</p>
+            {%- comment -%} sale and inventory info {%- endcomment -%}
+            <div data-variant-info-flag class="{% if cap <= price and inventory >= 5 %}hidden {% endif %}absolute top-0 left-0 p-3 z-20 text-white text-center bg-orange-600 font-squada">
+                <div class="{% if cap <= price and inventory >= 5 %}hidden {% endif %}">
+                    <p data-on-sale-el class="text-4xl">{{ 'content.product_badge_sale' | t}}</p>
+                    {%- assign percent_off = cap | minus: price | times: 100.0 | divided_by: cap | round -%}
+                    <p data-percent-off-el class="text-lg">{{ percent_off }}% OFF</p>
+                </div>
+                <p data-inventory-el class="{% if inventory > 5 %}hidden {% endif %} text-xl"> Only {{ inventory }} left!</p>
             </div>
         </div>
     </div>
 
-    <div class="flex-1">
+
+
+
+
+
+
+{%- comment -%} section 2 begins {%- endcomment -%}
+
+    <div class="flex-1 pl-10">
         <h1 class="font-squada text-8xl text-orange-600 uppercase">{{ product.title }}</h1>
 
         <div class=""> 
@@ -40,15 +80,104 @@
                  heat : product.metafields.custom.heat_level.value | default: 0 | plus: 0
              %}
          </div>
-
-        <p class="w-[90%] max-w-[500px] text-gray-800 text-lg">{{ product.description | strip_html}}</p>
-        <h2 class="font-squada text-4xl text-orange-600 border-b-2 border-orange-600 inline">INGREDIENTS</h2>
-        <p class="font-squada text-xl text-orange-600 w-[90%] max-w-[350px]">{{ product.metafields.custom.ingredients }}</p>
-        <div class="inline-flex items-end border-b-2 border-gray-800 font-squada">
-            <p class="line-through text-xl text-gray-400">{{ cap | money }}</p>
-            <p class="text-gray-800 text-3xl ml-4">{{ price | money }}</p>
-        </div>
+        <p class="w-[90%] max-w-[500px] text-gray-800 text-lg mt-3">{{ product.description | strip_html}}</p>
+        <h2 class="font-squada text-4xl text-orange-600 border-b-2 border-orange-600 inline-block mt-3">INGREDIENTS</h2>
+        <p class="font-squada text-xl text-orange-600 w-[90%] max-w-[450px]">{{ product.metafields.custom.ingredients }}</p>
         
+        <div class="my-5">
+            <div class="inline-flex items-end border-b-2 border-gray-800 font-squada">
+                <p class="line-through text-xl text-gray-400">{{ cap | money }}</p>
+                <p class="text-gray-800 text-3xl ml-4">{{ price | money }}</p>
+            </div>
+        </div>
+
+        <div class="w-full flex justify-between my-3">
+            {%- if product.variants.size > 1 -%}
+                <fieldset class="flex">
+                    <legend class="font-squada text-xl text-orange-600">SIZE</legend>
+
+                    {%- for variant in product.variants -%}
+                        {%- assign primary_url = variant.featured_media | default: product.featured_media | image_url: width: 900 -%}
+
+                        {%- assign secondary_mf = variant.metafields.custom.secondary_image -%}
+                        {%- if secondary_mf -%}
+                            {%- assign secondary_url = secondary_mf.value | default: product.featured_media | image_url: width: 900 -%}
+                        {%- else -%}
+                            {%- assign secondary_url = '' -%}
+                        {%- endif -%}
+                        <div>
+                            <input
+                                data-pdp-variant-radio
+                                data-primary-image="{{ primary_url }}"
+                                data-secondary-image="{{ secondary_url }}"
+                                type="radio"
+                                name="variant_{{ product.id }}"
+                                value="{{ variant.id }}"
+                                id="popoca-card-{{ variant.id }}"
+                                data-variant-id="{{ variant.id }}"
+                                class="sr-only peer"
+                                aria-label="{{ variant.name | default: variant.title }}"
+                                data-price-cents="{{ variant.price }}"
+                                data-price-money="{{ variant.price | money }}"
+                                data-compare-cents="{{ variant.compare_at_price }}"
+                                data-variant-url="{{ product.url | append: '?variant=' | append: variant.id}}"
+                                data-variant-inventory="{{ variant.inventory_quantity }}"
+                                {% if forloop.first %}
+                                    checked
+                                {% endif %}
+                            >
+                            <label
+                                for="popoca-card-{{ variant.id }}"
+                                class="font-squada text-lg cursor-pointer p-1 border border-orange-600 text-orange-600 font-bold hover:text-white hover:bg-orange-600 peer-checked:text-white peer-checked:bg-orange-600"
+                            >
+                                {{ variant.title }}
+                            </label>
+                        </div>
+                    {%- endfor -%}
+                </fieldset>
+            {% endif %}
+        </div>
+
+        {% form 'product', product, data-product-form: true %}
+            {%- comment -%} Hidden variant id (updated dynamically by JS) {%- endcomment -%}
+            <input type="hidden" name="id" value="{{ def_v.id }}" data-add-variant-to-cart>
+            
+                <p class="font-squada text-xl text-orange-600">QUANTITY</p>
+                <div class="inline-flex items-center text-sm font-bold">
+                    <button
+                        data-decrement
+                        type="button"
+                        class="flex items-center justify-center h-8 w-8 text-orange-600 border border-orange-600 hover:bg-orange-600 hover:text-gray-50"
+                    >–</button>
+                    <div class="h-8 w-8 focus:outline-none text-orange-600 mx-1 flex justify-center align-middle border-y border-orange-600">
+                        <input
+                            data-quantity
+                            value="1"
+                            class="w-full text-center focus:outline-none"
+                            readonly
+                            inputmode="numeric"
+                            name="quantity"
+                            min="1"
+                        >
+                    </div>
+                    <button
+                        data-increment
+                        type="button"
+                        class="flex items-center justify-center h-8 w-8 text-orange-600 border border-orange-600 hover:bg-orange-600 hover:text-gray-50"
+                    >+</button>
+                </div>
+
+
+                <button
+                    type="submit"
+                    name="add"
+                    class="uppercase block max-w-fit px-4 py-2 mt-5 font-squada text-4xl border-2 text-orange-600 border-orange-600 hover:bg-orange-600 hover:text-gray-50"
+                >
+                    {{ 'products.product.add_to_cart' | t }}
+                </button>
+            
+        {% endform %}
+
     </div>
 
 </div>

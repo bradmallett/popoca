@@ -19,3 +19,12 @@
 .popoca-cart-open {
     @apply right-0 opacity-100;
 }
+
+
+.thumbnailSelected {
+    @apply ring-4 ring-orange-600 saturate-100;
+}
+
+.thumbnailNotSelected {
+    @apply saturate-[.1];
+}

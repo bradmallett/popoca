@@ -27,14 +27,14 @@
         >
             {{ def_v.featured_media 
                 | image_url: width: 900 
-                | image_tag: class: 'w-full h-full object-cover',
+                | image_tag: class: 'w-full h-full object-cover object-bottom',
                 alt: product.title,
                 data-featured-image: 'true' 
             }}
 
             {{ def_v.metafields.custom.secondary_image
                 | image_url: width: 900 
-                | image_tag: class: 'w-full h-full object-cover z-10 absolute inset-0 transition-opacity duration-300 opacity-0 hover:opacity-100',
+                | image_tag: class: 'w-full h-full object-cover object-bottom z-10 absolute inset-0 transition-opacity duration-300 opacity-0 hover:opacity-100',
                 alt: product.title,
                 data-secondary-image-el: 'true' 
             }}
