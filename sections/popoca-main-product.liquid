@@ -52,9 +52,10 @@
                 alt: product.title,
                 data-pdp-featured-image: 'true'
             }}
+
             {%- comment -%} sale and inventory info {%- endcomment -%}
-            <div data-variant-info-flag class="{% if cap <= price and inventory >= 5 %}hidden {% endif %}absolute top-0 left-0 p-3 z-20 text-white text-center bg-orange-600 font-squada">
-                <div class="{% if cap <= price and inventory >= 5 %}hidden {% endif %}">
+            <div data-variant-info-flag class="{% if cap <= price and inventory >= 5 %}hidden {% endif %}absolute top-0 left-0 p-2 z-20 text-white text-center bg-orange-600 font-squada">
+                <div data-on-sale-contain class="{% if cap <= price and inventory >= 5 %}hidden {% endif %}">
                     <p data-on-sale-el class="text-4xl">{{ 'content.product_badge_sale' | t}}</p>
                     {%- assign percent_off = cap | minus: price | times: 100.0 | divided_by: cap | round -%}
                     <p data-percent-off-el class="text-lg">{{ percent_off }}% OFF</p>
@@ -86,8 +87,8 @@
         
         <div class="my-5">
             <div class="inline-flex items-end border-b-2 border-gray-800 font-squada">
-                <p class="line-through text-xl text-gray-400">{{ cap | money }}</p>
-                <p class="text-gray-800 text-3xl ml-4">{{ price | money }}</p>
+                <p data-cap class="{% if cap <= price %}hidden {% endif %} line-through text-xl text-gray-400 mr-4">{{ cap | money }}</p>
+                <p data-price class="text-gray-800 text-3xl">{{ price | money }}</p>
             </div>
         </div>
 
@@ -110,18 +111,21 @@
                                 data-pdp-variant-radio
                                 data-primary-image="{{ primary_url }}"
                                 data-secondary-image="{{ secondary_url }}"
+                                data-price-cents="{{ variant.price }}"
+                                data-price-money="{{ variant.price | money }}"
+                                data-compare-money="{{ variant.compare_at_price | money }}"
+                                data-compare-cents="{{ variant.compare_at_price }}"
+                                data-variant-inventory="{{ variant.inventory_quantity }}"
+                                data-variant-id="{{ variant.id }}"
+
                                 type="radio"
                                 name="variant_{{ product.id }}"
                                 value="{{ variant.id }}"
                                 id="popoca-card-{{ variant.id }}"
-                                data-variant-id="{{ variant.id }}"
                                 class="sr-only peer"
                                 aria-label="{{ variant.name | default: variant.title }}"
-                                data-price-cents="{{ variant.price }}"
-                                data-price-money="{{ variant.price | money }}"
-                                data-compare-cents="{{ variant.compare_at_price }}"
                                 data-variant-url="{{ product.url | append: '?variant=' | append: variant.id}}"
-                                data-variant-inventory="{{ variant.inventory_quantity }}"
+                                
                                 {% if forloop.first %}
                                     checked
                                 {% endif %}
@@ -138,43 +142,51 @@
             {% endif %}
         </div>
 
+
+
+
+
+
         {% form 'product', product, data-product-form: true %}
+
             {%- comment -%} Hidden variant id (updated dynamically by JS) {%- endcomment -%}
-            <input type="hidden" name="id" value="{{ def_v.id }}" data-add-variant-to-cart>
+            <input type="hidden" name="id" value="{{ def_v.id }}" data-variant-id-on-cart>
             
-                <p class="font-squada text-xl text-orange-600">QUANTITY</p>
-                <div class="inline-flex items-center text-sm font-bold">
-                    <button
-                        data-decrement
-                        type="button"
-                        class="flex items-center justify-center h-8 w-8 text-orange-600 border border-orange-600 hover:bg-orange-600 hover:text-gray-50"
-                    >–</button>
-                    <div class="h-8 w-8 focus:outline-none text-orange-600 mx-1 flex justify-center align-middle border-y border-orange-600">
-                        <input
-                            data-quantity
-                            value="1"
-                            class="w-full text-center focus:outline-none"
-                            readonly
-                            inputmode="numeric"
-                            name="quantity"
-                            min="1"
-                        >
-                    </div>
-                    <button
-                        data-increment
-                        type="button"
-                        class="flex items-center justify-center h-8 w-8 text-orange-600 border border-orange-600 hover:bg-orange-600 hover:text-gray-50"
-                    >+</button>
-                </div>
-
-
+            <p class="font-squada text-xl text-orange-600">QUANTITY</p>
+            <div class="inline-flex items-center text-sm font-bold">
                 <button
-                    type="submit"
-                    name="add"
-                    class="uppercase block max-w-fit px-4 py-2 mt-5 font-squada text-4xl border-2 text-orange-600 border-orange-600 hover:bg-orange-600 hover:text-gray-50"
-                >
-                    {{ 'products.product.add_to_cart' | t }}
-                </button>
+                    data-quantity-btn
+                    data-decrement
+                    type="button"
+                    class="flex items-center justify-center h-8 w-8 text-orange-600 border border-orange-600 hover:bg-orange-600 hover:text-gray-50"
+                >–</button>
+                <div class="h-8 w-8 focus:outline-none text-orange-600 mx-1 flex justify-center align-middle border-y border-orange-600">
+                    <input
+                        data-quantity-input-pdp
+                        value="1"
+                        class="w-full text-center focus:outline-none"
+                        readonly
+                        inputmode="numeric"
+                        name="quantity"
+                        min="1"
+                    >
+                </div>
+                <button
+                    data-quantity-btn
+                    data-increment
+                    type="button"
+                    class="flex items-center justify-center h-8 w-8 text-orange-600 border border-orange-600 hover:bg-orange-600 hover:text-gray-50"
+                >+</button>
+            </div>
+
+
+            <button
+                type="submit"
+                name="add"
+                class="uppercase block max-w-fit px-4 py-2 mt-5 font-squada text-4xl border-2 text-orange-600 border-orange-600 hover:bg-orange-600 hover:text-gray-50"
+            >
+                {{ 'products.product.add_to_cart' | t }}
+            </button>
             
         {% endform %}
 

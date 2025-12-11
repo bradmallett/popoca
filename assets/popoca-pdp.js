@@ -3,12 +3,108 @@
 document.addEventListener('change', (e) => {
     const variantBtn = e.target.closest('[data-pdp-variant-radio]');
     if(!variantBtn) return;
-    updateImages(variantBtn);
 
-    
+    const variantPriceCents = parseInt(variantBtn.dataset.priceCents || '0', 10);
+    const variantComparePriceCents = parseInt(variantBtn.dataset.compareCents || '0', 10);
+    const variantIsOnSale = variantComparePriceCents > 0 && variantComparePriceCents > variantPriceCents;
+
+    updateImages(variantBtn);
+    updateVariantInfoFlag(variantBtn, variantPriceCents, variantComparePriceCents, variantIsOnSale);
+    updateVariantPrice(variantBtn, variantIsOnSale);
+    addVariantToCartForm(variantBtn);
 });
 
 
+document.querySelectorAll('[data-quantity-btn]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+        const quantityBtn = e.target;
+        const quantityInputEl = document.querySelector('[data-quantity-input-pdp]');
+        let quantity = parseInt(quantityInputEl.value, 10);
+
+        if(quantityBtn.hasAttribute('data-decrement')) {
+            if(quantity <= 1) {
+                quantity = 1;
+            }
+            else {
+                quantity -= 1;
+            }
+        }
+
+        if(quantityBtn.hasAttribute('data-increment')) quantity += 1;
+
+        quantityInputEl.value = quantity.toString();
+    })
+})
+
+
+
+
+function addVariantToCartForm(btn) {
+    const selectedVariantId = btn.dataset.variantId;
+    const variantIdInput = document.querySelector('[data-variant-id-on-cart]');
+    if ( !selectedVariantId || !variantIdInput ) return;
+    
+    variantIdInput.value = selectedVariantId;
+}
+
+
+
+function updateVariantPrice(btn, variantIsOnSale) {
+    const priceEl = document.querySelector('[data-price]');
+    const priceMoney = btn.dataset.priceMoney;
+    if(!priceEl || !priceMoney) return;
+    priceEl.innerText = priceMoney;
+
+
+    const capEl = document.querySelector('[data-cap]');
+    if(!capEl) return;
+
+    const compareMoney = btn.dataset.compareMoney;
+
+    if(variantIsOnSale && compareMoney) {
+        capEl.innerText = compareMoney;
+        capEl.classList.remove('hidden');
+    } else {
+        capEl.classList.add('hidden');
+    }
+}
+
+
+
+
+function updateVariantInfoFlag(btn, variantPrice, variantComparePrice, variantIsOnSale) {
+    const variantInventory = parseInt(btn.dataset.variantInventory || '0', 10);
+    const variantInfoFlagEl = document.querySelector('[data-variant-info-flag]'); // could be hidden
+    const onSaleContainEl = document.querySelector('[data-on-sale-contain]'); // could be hidden
+    const percentOffEl = document.querySelector('[data-percent-off-el]');
+    const inventoryEl = document.querySelector('[data-inventory-el]'); // could be hidden
+
+    const showLowInventory = variantInventory <= 5;
+    const shouldShowFlag = variantIsOnSale || showLowInventory;
+
+    if (!variantInfoFlagEl || !onSaleContainEl || !percentOffEl || !inventoryEl) return;
+
+    variantInfoFlagEl.classList.toggle('hidden', !shouldShowFlag);
+
+    if(variantIsOnSale) {
+        const percentageOff = 100 - Math.round((variantPrice / variantComparePrice) * 100);
+        percentOffEl.textContent = percentageOff + '% OFF';
+        onSaleContainEl.classList.remove('hidden');
+    } else {
+        onSaleContainEl.classList.add('hidden');
+    }
+
+    if(showLowInventory) {
+        inventoryEl.textContent = "Only " + variantInventory + " left!";
+        inventoryEl.classList.remove('hidden');
+    } else {
+        inventoryEl.classList.add('hidden');
+    }
+}
+
+
+
+// thumbnail photo clicks
 document.querySelectorAll('[data-thumbnail-btn]').forEach((btn) => {
     btn.addEventListener('click', () => {
         const newImgUrl = btn.dataset.thumbLink;
@@ -33,7 +129,7 @@ document.querySelectorAll('[data-thumbnail-btn]').forEach((btn) => {
         featuredImgEl.src = newImgUrl;
         featuredImgEl.srcset = '';
     });
-})
+});
 
 
 
@@ -88,7 +184,6 @@ function updateImages(btn) {
             primaryThumbBtn.classList.remove('thumbnailNotSelected');
             primaryThumbBtn.classList.add('thumbnailSelected');
         }
-
     }
 
 }
