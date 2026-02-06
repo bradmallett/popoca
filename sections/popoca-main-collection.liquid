@@ -1,0 +1,85 @@
+
+
+    
+
+    <div class="mx-auto max-w-6xl px-4 py-10">
+        <h2 class="font-bold text-orange-600 text-3xl border-b-2 border-orange-600 mt-2 mb-4">A hot sauce for every occassion!</h2>
+        <div class="flex justify-start mb-6">
+            <form method="get" class="collection-sort">
+                <label for="SortBy" class="sr-only">Sort by</label>
+                <select
+                    id="SortBy"
+                    name="sort_by"
+                    onchange="this.form.submit()"
+                    class="border-2 border-orange-600 px-3 p-2 text-sm rounded-none cursor-pointer text-orange-600 font-bold"
+                >
+                    <option value="manual"
+                        {% if collection.sort_by == blank or collection.sort_by == 'manual' %}
+                            selected
+                        {% endif %}
+                    >
+                        Default
+                    </option>
+
+                    <option value="created-descending"
+                        {% if collection.sort_by == 'created-descending' %}
+                            selected
+                        {% endif %}
+                    >
+                        Newest
+                    </option>
+
+                    <option value="price-ascending"
+                        {% if collection.sort_by == 'price-ascending' %}
+                            selected
+                        {% endif %}
+                    >
+                        Price: Low to High
+                    </option>
+
+                    <option value="price-descending"
+                        {% if collection.sort_by == 'price-descending' %}
+                            selected
+                        {% endif %}
+                    >
+                        Price: High to Low
+                    </option>
+                </select>
+            </form>
+    </div>
+
+
+  <div class="[display:grid] gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-start">
+    {% for product in collection.products %}
+        {% assign v = product.selected_or_first_available_variant %}
+        {% assign is_on_sale = false %}
+
+        {% if v.compare_at_price and v.compare_at_price > v.price %}
+            {% assign is_on_sale = true %}
+        {% endif %}
+        
+            {% if on_sale_only == '1' and is_on_sale == false %}
+                {% continue %}
+            {% endif %}
+
+            {% render 'popoca-simple-product-card', show_price: true, product: product %}
+    {% endfor %}
+  </div>
+</div>
+
+
+
+
+{% schema %}
+{
+    "name": "Popoca-Main-Collection",
+    "tag": "section",
+    "settings": [],
+    "presets": [
+        {
+            "name": "Popoca-Main-Collection"
+        }
+    ]
+}
+
+{% endschema %}

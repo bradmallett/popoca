@@ -1,0 +1,154 @@
+{%- doc -%}
+  This snippet is used to render a Popoca simple product card.
+  
+  @param {object} product - The product object
+  @param {boolean} show_price - Whether to show the price or not
+
+{%- enddoc -%}
+
+{%- comment -%} id rather not type this a million times {%- endcomment -%}
+{%- liquid 
+    assign def_v = product.selected_or_first_available_variant
+    assign cap = def_v.compare_at_price | default: 0 | plus: 0
+    assign price = def_v.price | default: 0 | plus: 0
+    assign inventory = def_v.inventory_quantity | default: 0 | plus: 0
+-%}
+
+<article
+    data-popular-product-card
+    data-product-id="{{ product.id }}"
+    class="min-w-0 w-full shadow-md shadow-gray-400 bg-gray-50"
+>
+    <div class="w-full aspect-[2/3] overflow-hidden bg-gray-100 relative cursor-pointer">
+        <a
+            href="{{ product.url | append: '?variant=' | append: def_v.id}}"
+            data-product-link
+            class="block w-full h-full"
+        >
+            {{ def_v.featured_media 
+                | image_url: width: 900 
+                | image_tag: class: 'w-full h-full object-cover object-center',
+                alt: product.title,
+                data-featured-image: 'true' 
+            }}
+
+            {{ def_v.metafields.custom.secondary_image
+                | image_url: width: 900 
+                | image_tag: class: 'w-full h-full object-cover object-center z-10 absolute inset-0 transition-opacity duration-300 opacity-0 hover:opacity-100',
+                alt: product.title,
+                data-secondary-image-el: 'true' 
+            }}
+        </a>
+
+        {%- comment -%} show / hide on sale info {%- endcomment -%}
+        <div data-on-sale class="{% if cap <= price %}hidden {% endif %}absolute top-0 left-0 p-1 z-20 text-white text-center font-bold bg-orange-600">
+            <p data-sale-badge class="text-xl">{{ 'content.product_badge_sale' | t}}</p>
+
+            {%- comment -%} calculating percentage off {%- endcomment -%}
+            {%- assign percent_off = cap | minus: price | times: 100.0 | divided_by: cap | round -%}
+            <p data-percent-off class="text-xs">{{ percent_off }}% OFF</p>
+        </div>
+
+        {%- comment -%} show / hide low stock {%- endcomment -%}
+        <div data-low-stock class="{% if inventory > 5 %}hidden {% endif %}text-white text-center z-20 absolute bottom-0 left-0 w-full bg-orange-600 p-1 font-bold">
+            <p>{{ 'content.inventory_low_stock' | t}}</p>
+        </div>
+
+        {% comment %} rendering heat level graphic {% endcomment %}
+         <div class="absolute top-1 right-1 z-20"> 
+             {% render 'popoca-heat-level',
+                 heat : product.metafields.custom.heat_level.value | default: 0 | plus: 0,
+                 pixel_size: 24
+             %}
+         </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="p-2">
+        <a
+            class="text-2xl text-orange-600 uppercase font-squada"
+            href="{{ product.url | append: '?variant=' | append: def_v.id}}"
+            data-product-link
+        >
+            {{ product.title }}
+        </a>
+
+        {%- if show_price == true -%}
+            <p data-price-el class="font-bold text-md text-gray-600">{{ def_v.price | money }}</p>
+        {%- endif -%}   
+
+
+        <div class="w-full flex justify-between my-3">
+            {%- if product.variants.size > 1 -%}
+                <fieldset class="flex">
+                    <legend class="sr-only">Choose a size</legend>
+
+                    {%- for variant in product.variants -%}
+                        {%- assign primary_url = variant.featured_media | default: product.featured_media | image_url: width: 900 -%}
+
+                        {%- assign secondary_mf = variant.metafields.custom.secondary_image -%}
+                        {%- if secondary_mf -%}
+                            {%- assign secondary_url = secondary_mf.value | default: product.featured_media | image_url: width: 900 -%}
+                        {%- else -%}
+                            {%- assign secondary_url = '' -%}
+                        {%- endif -%}
+                        <div>
+                            <input
+                                type="radio"
+                                name="variant_{{ product.id }}"
+                                value="{{ variant.id }}"
+                                id="popoca-card-{{ variant.id }}"
+                                data-variant-id="{{ variant.id }}"
+                                class="sr-only peer"
+                                aria-label="{{ variant.name | default: variant.title }}"
+                                data-variant-radio
+                                data-image="{{ primary_url }}"
+                                data-price-cents="{{ variant.price }}"
+                                data-price-money="{{ variant.price | money }}"
+                                data-compare-cents="{{ variant.compare_at_price }}"
+                                data-secondary-image="{{ secondary_url }}"
+                                data-variant-url="{{ product.url | append: '?variant=' | append: variant.id}}"
+                                data-variant-inventory="{{ variant.inventory_quantity }}"
+                                {% if forloop.first %}
+                                    checked
+                                {% endif %}
+                            >
+                            <label
+                                for="popoca-card-{{ variant.id }}"
+                                class="font-squada text-lg cursor-pointer p-1 border border-orange-600 text-orange-600 font-bold hover:text-white hover:bg-orange-600 peer-checked:text-white peer-checked:bg-orange-600"
+                            >
+                                {{ variant.title }}
+                            </label>
+                        </div>
+                    {%- endfor -%}
+                </fieldset>
+            {% endif %}
+   
+        </div>
+
+
+        {% form 'product', product, class: 'mt-3 flex items-center gap-3', data-product-form: true %}
+            {%- comment -%} Hidden variant id (updated dynamically by JS) {%- endcomment -%}
+            <input type="hidden" name="id" value="{{ def_v.id }}" data-add-variant-to-cart>
+            <input type="hidden" name="quantity" value="1">            
+            <button
+                type="submit"
+                name="add"
+                class="uppercase font-squada text-lg border-2 text-orange-600 border-orange-600 hover:bg-orange-600 hover:text-gray-50 p-1"
+            >
+                {{ 'products.product.add_to_cart' | t }}
+            </button>
+        {% endform %}
+    </div>
+</article>
