@@ -1,9 +1,8 @@
 {%- doc -%}
-  This snippet is used to render a Popoca product card.
+  This snippet is used to render a Popoca simple product card.
   
   @param {object} product - The product object
   @param {boolean} show_price - Whether to show the price or not
-  @param {number} [max_description_length] - The length the description is allowed to be
 
 {%- enddoc -%}
 
@@ -18,23 +17,24 @@
 <article
     data-popular-product-card
     data-product-id="{{ product.id }}"
-    class="w-[95%] md:w-[325px] shadow-md shadow-gray-400 bg-gray-50"
+    class="min-w-0 w-full shadow-md shadow-gray-400 bg-gray-50"
 >
     <div class="w-full aspect-[2/3] overflow-hidden bg-gray-100 relative cursor-pointer">
         <a
             href="{{ product.url | append: '?variant=' | append: def_v.id}}"
             data-product-link
+            class="block w-full h-full"
         >
             {{ def_v.featured_media 
                 | image_url: width: 900 
-                | image_tag: class: 'w-full h-full object-cover object-bottom',
+                | image_tag: class: 'w-full h-full object-cover object-center',
                 alt: product.title,
                 data-featured-image: 'true' 
             }}
 
             {{ def_v.metafields.custom.secondary_image
                 | image_url: width: 900 
-                | image_tag: class: 'w-full h-full object-cover object-bottom z-10 absolute inset-0 transition-opacity duration-300 opacity-0 hover:opacity-100',
+                | image_tag: class: 'w-full h-full object-cover object-center z-10 absolute inset-0 transition-opacity duration-300 opacity-0 hover:opacity-100',
                 alt: product.title,
                 data-secondary-image-el: 'true' 
             }}
@@ -57,12 +57,25 @@
         {% comment %} rendering heat level graphic {% endcomment %}
          <div class="absolute top-1 right-1 z-20"> 
              {% render 'popoca-heat-level',
-                 heat : product.metafields.custom.heat_level.value | default: 0 | plus: 0
+                 heat : product.metafields.custom.heat_level.value | default: 0 | plus: 0,
+                 pixel_size: 24
              %}
          </div>
     </div>
 
-    <div class="mt-2 p-2">
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="p-2">
         <a
             class="text-2xl text-orange-600 uppercase font-squada"
             href="{{ product.url | append: '?variant=' | append: def_v.id}}"
@@ -124,49 +137,18 @@
    
         </div>
 
-        <p class="text-sm font-medium text-gray-600">{{ product.metafields.custom.short_description | strip_html | truncate: max_description_length }}</p>
 
         {% form 'product', product, class: 'mt-3 flex items-center gap-3', data-product-form: true %}
             {%- comment -%} Hidden variant id (updated dynamically by JS) {%- endcomment -%}
             <input type="hidden" name="id" value="{{ def_v.id }}" data-add-variant-to-cart>
-
-            {%- comment -%} quantity buttons and add to cart button {%- endcomment -%}
-            <div class="flex w-full">
-                <button
-                    type="submit"
-                    name="add"
-                    class="uppercase font-squada text-lg border-2 text-orange-600 border-orange-600 hover:bg-orange-600 hover:text-gray-50 p-1"
-                >
-                    {{ 'products.product.add_to_cart' | t }}
-                </button>
-
-                <div class="inline-flex items-center text-sm font-bold">
-                    <button
-                        data-decrement
-                        type="button"
-                        class="flex items-center justify-center h-8 w-8 text-orange-600 border border-orange-600 hover:bg-orange-600 hover:text-gray-50"
-                    >–</button>
-
-                    <div class="h-8 w-8 focus:outline-none text-orange-600 mx-1 flex justify-center align-middle border-y border-orange-600">
-                        <input
-                            data-quantity
-                            value="1"
-                            class="w-full text-center focus:outline-none"
-                            readonly
-                            inputmode="numeric"
-                            name="quantity"
-                            min="1"
-                        >
-                    </div>
-
-                    <button
-                        data-increment
-                        type="button"
-                        class="flex items-center justify-center h-8 w-8 text-orange-600 border border-orange-600 hover:bg-orange-600 hover:text-gray-50"
-                    >+</button>
-                </div>
-            </div>
-
+            <input type="hidden" name="quantity" value="1">            
+            <button
+                type="submit"
+                name="add"
+                class="uppercase font-squada text-lg border-2 text-orange-600 border-orange-600 hover:bg-orange-600 hover:text-gray-50 p-1"
+            >
+                {{ 'products.product.add_to_cart' | t }}
+            </button>
         {% endform %}
     </div>
 </article>

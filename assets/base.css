@@ -4300,5 +4300,23 @@ text-component {
 
 
 body:has(.header[transparent]) #header-group > .header-section {
+  position: sticky !important;
   z-index: 30 !important;
+}
+
+
+#header-group {
+  position: sticky !important;
+  z-index: 100 !important;
+}
+
+
+#header-group .header-section {
+  position: sticky !important;
+  z-index: 100 !important;
+}
+
+#header-group > * {
+  position: sticky !important;
+  z-index: 100 !important;
 }
