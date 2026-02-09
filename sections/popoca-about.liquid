@@ -1,0 +1,138 @@
+<section>
+    <article class="relative max-w-[1000px] mx-auto">
+
+
+        <div class="relative sm:translate-y-[100px] mt-10 z-10 flex flex-col sm:flex-row items-center w-[90%] mx-auto sm:gap-8">
+            <div class="w-full sm:w-[50%]">
+                <h2 class="text-orange-600 font-squada text-5xl md:text-8xl md:relative md:top-8">{{ section.settings.heading_1 }}</h2>
+                <div class="w-full aspect-square sm:aspect-[3/4] overflow-hidden bg-gray-100">
+                    {{ 
+                        section.settings.image_1
+                        | image_url: width: 900 
+                        | image_tag: class: 'w-full h-full object-cover object-center',
+                        alt: section.settings.heading_1
+                    }}
+                </div>
+            </div>
+
+            <div class="w-full sm:w-[50%]">
+                <h3 class="text-orange-600 font-squada text-3xl sm:max-w-[195px] leading-none">{{ section.settings.subheading_1 }}</h3>
+                <p class="text-gray-600 sm:mt-2 sm:max-w-[400px]">{{ section.settings.text_1 }}</p>
+            </div>
+        </div>
+
+
+
+
+        <div class="w-full mx-auto my-10 pointer-events-none max-sm:hidden">
+            <svg
+                class="w-full h-[220px]"
+                viewBox="0 0 1000 220"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+            >
+                <path
+                d="M 20 0
+                    L 20 120
+                    L 980 120
+                    L 980 220"
+                fill="none"
+                stroke="#ea580c"
+                stroke-width="2"
+                vector-effect="non-scaling-stroke"
+                stroke-linecap="square"
+                />
+            </svg>
+        </div>
+
+
+
+
+        <div class="relative sm:-translate-y-[120px] my-10 sm:my-0 z-10 flex flex-col-reverse sm:flex-row items-center w-[90%] max-w-[1000px] mx-auto sm:gap-8">
+            <div class="w-full sm:w-[50%] sm:text-right">
+                <h3 class="text-orange-600 font-squada text-3xl leading-none sm:text-right">{{ section.settings.subheading_2 }}</h3>
+                <p class="text-gray-600 sm:mt-2 sm:max-w-[400px] sm:text-right sm:ml-auto">{{ section.settings.text_2 }}</p>
+                <a href="{{ routes.all_products_collection_url }}"><button class="text-orange-600 font-bold text-xl p-1 mt-5 border-2 border-orange-600 hover:border-gray-400 hover:text-gray-400 transition-all ease-in-out">OUR SAUCES</button></a>
+            </div>
+
+            <div class="w-full sm:w-[50%]">
+                <h2 class="text-orange-600 font-squada text-5xl md:text-8xl md:relative md:top-8 md:text-right">{{ section.settings.heading_2 }}</h2>
+                <div class="w-full aspect-square sm:aspect-[3/4] overflow-hidden bg-gray-100">
+                    {{ 
+                        section.settings.image_2
+                        | image_url: width: 900 
+                        | image_tag: class: 'w-full h-full object-cover object-center',
+                        alt: section.settings.heading_2
+                    }}
+                </div>
+            </div>
+
+        </div>
+    </article>
+</section>
+
+
+
+
+{% schema %}
+{
+    "name": "Popoca About",
+    "tag": "section",
+    "settings": [
+        {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Image 1"
+        },
+        {
+            "type": "text",
+            "id": "heading_1",
+            "label": "Heading 1"
+        },
+        {
+            "type": "text",
+            "id": "subheading_1",
+            "label": "Subheading 1"
+        },
+        {
+            "type": "text",
+            "id": "text_1",
+            "label": "Text 1"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Image 2"
+        },
+        {
+            "type": "text",
+            "id": "heading_2",
+            "label": "Heading 2"
+        },
+        {
+            "type": "text",
+            "id": "subheading_2",
+            "label": "Subheading 2"
+        },
+        {
+            "type": "text",
+            "id": "text_2",
+            "label": "Text 2"
+        },
+    ],
+    "presets": [
+        {
+            "name": "Popoca-About",
+            "settings": {
+                "heading_1": "ABOUT US",
+                "subheading_1": "Crafted heat. Real ingredients.",
+                "text_1": "Our hot sauce is made in small batches using real peppers, real fruit, and real heat. No fillers. No gimmicks. Just bold inspired by traditional methods and fresh ingredients.",
+                "heading_2": "WHAT WE DO",
+                "subheading_2": "Heat with purpose.",
+                "text_2": "We aren't about chasing the hottest pepper. We're about balance, flavor, and respect for the ingredients. Heat should enhance the food — not overpower it."
+            }
+        }
+    ]
+}
+
+{% endschema %}
