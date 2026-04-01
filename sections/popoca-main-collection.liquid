@@ -1,70 +1,89 @@
+<script src="{{ 'popoca-collection-filters.js' | asset_url }}" defer></script>
 
+<div class="mx-auto max-w-6xl px-4 py-10">
 
-    
+    {% comment %} ----FILTERS---- {% endcomment %}
+    <div data-collection-inner>
+        <collection-filters data-section-id="{{ section.id }}">
+            <div class="font-bold text-2xl">
+                <h2>Filters</h2>
+            </div>
+            <div class="">
+                {% for filter in collection.filters %}
+                    <div>
+                        <div class="font-bold">
+                            {{ filter.label }}
+                        </div>
+                        <div class="">
+                            {% if filter.type == "list" or filter.type == "boolean" %}
+                                {% for value in filter.values %}
+                                    <div>
+                                        <input
+                                            type="checkbox"
+                                            id="{{ filter.label | handle }}-{{ value.value | handle }}"
+                                            name="{{ filter.label | handle }}"
+                                            value="{{ value.value | handle }}"
+                                            data-add-url="{{ value.url_to_add }}"
+                                            data-remove-url="{{ value.url_to_remove }}"
+                                            {% if value.active %}
+                                                checked
+                                            {% endif %}
+                                        >
+                                        <label for="{{ filter.label | handle }}-{{ value.value | handle }}">
+                                            {{ value.label }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {% if filter.min_value.value %}
+                                        {% assign min_value = filter.min_value.value | divided_by: 100.0 %}
+                                    {% else %}
+                                        {% assign min_value = 0.0 %}
+                                {% endif %}
 
-    <div class="mx-auto max-w-6xl px-4 py-10">
-        <h2 class="font-bold text-orange-600 text-3xl border-b-2 border-orange-600 mt-2 mb-4">A hot sauce for every occassion!</h2>
-        <div class="flex justify-start mb-6">
-            <form method="get" class="collection-sort">
-                <label for="SortBy" class="sr-only">Sort by</label>
-                <select
-                    id="SortBy"
-                    name="sort_by"
-                    onchange="this.form.submit()"
-                    class="border-2 border-orange-600 px-3 p-2 text-sm rounded-none cursor-pointer text-orange-600 font-bold"
-                >
-                    <option value="manual"
-                        {% if collection.sort_by == blank or collection.sort_by == 'manual' %}
-                            selected
-                        {% endif %}
-                    >
-                        Default
-                    </option>
+                                {% if filter.max_value.value %}
+                                        {% assign max_value = filter.max_value.value | divided_by: 100.0 %}
+                                    {% else %}
+                                        {% assign max_value = filter.range_max | divided_by: 100.0 %}
+                                {% endif %}
 
-                    <option value="created-descending"
-                        {% if collection.sort_by == 'created-descending' %}
-                            selected
-                        {% endif %}
-                    >
-                        Newest
-                    </option>
+                                <div>
+                                    <input 
+                                        type="range"
+                                        id="{{ filter.min_value.param_name }}"
+                                        name="{{ filter.min_value.param_name }}"
+                                        min="0"
+                                        max="{{ filter.range_max | divided_by: 100 | round | plus: 1 }}"
+                                        value="{{ min_value }}"
+                                        data-param="{{ filter.min_value.param_name }}"
+                                        data-min-value
+                                    >
+                                    <input 
+                                        type="range"
+                                        id="{{ filter.max_value.param_name }}"
+                                        name="{{ filter.max_value.param_name }}"
+                                        min="0"
+                                        max="{{ filter.range_max | divided_by: 100 | round | plus: 1 }}"
+                                        value="{{ max_value }}"
+                                        data-param="{{ filter.max_value.param_name }}"
+                                        data-max-value
+                                    >
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </collection-filters>
 
-                    <option value="price-ascending"
-                        {% if collection.sort_by == 'price-ascending' %}
-                            selected
-                        {% endif %}
-                    >
-                        Price: Low to High
-                    </option>
-
-                    <option value="price-descending"
-                        {% if collection.sort_by == 'price-descending' %}
-                            selected
-                        {% endif %}
-                    >
-                        Price: High to Low
-                    </option>
-                </select>
-            </form>
+        {% comment %} ----PRODUCT GRID---- {% endcomment %}
+        <div class="[display:grid] gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-start">
+            {% for product in collection.products %}
+                {% render 'popoca-simple-product-card', show_price: true, product: product %}
+            {% endfor %}
+        </div>
     </div>
 
-
-  <div class="[display:grid] gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-start">
-    {% for product in collection.products %}
-        {% assign v = product.selected_or_first_available_variant %}
-        {% assign is_on_sale = false %}
-
-        {% if v.compare_at_price and v.compare_at_price > v.price %}
-            {% assign is_on_sale = true %}
-        {% endif %}
-        
-            {% if on_sale_only == '1' and is_on_sale == false %}
-                {% continue %}
-            {% endif %}
-
-            {% render 'popoca-simple-product-card', show_price: true, product: product %}
-    {% endfor %}
-  </div>
 </div>
 
 
