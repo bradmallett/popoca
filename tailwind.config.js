@@ -15,7 +15,11 @@ module.exports = {
       },
       fontFamily: {
         squada: ['"Squada One"', 'sans-serif'],
+        fraunces: ['"Fraunces"', 'serif'],
       },
+      colors: {
+      moss: '#6F9570',
+    },
     },
   },
   plugins: [],

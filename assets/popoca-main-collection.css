@@ -1,0 +1,17 @@
+
+.popoca-main-collection {
+    position: relative;
+    background-image:
+    linear-gradient(rgba(253, 161, 85, 0.315), rgba(255, 121, 11, 0.352)),
+    url('paper-lighter547kb2.jpg');
+    background-position: center top;
+    background-attachment: fixed;
+  }
+
+  
+  .custom-checkbox:checked::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    background: #6F9570;
+}

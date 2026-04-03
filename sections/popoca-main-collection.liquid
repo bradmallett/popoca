@@ -1,23 +1,33 @@
 <script src="{{ 'popoca-collection-filters.js' | asset_url }}" defer></script>
+<link rel="stylesheet" href="{{ 'popoca-main-collection.css' | asset_url }}">
 
-<div class="mx-auto max-w-6xl px-4 py-10">
+<section class="popoca-main-collection">
+    <div class="mx-auto max-w-[1700px]">
 
-    {% comment %} ----FILTERS---- {% endcomment %}
-    <div data-collection-inner>
-        <collection-filters data-section-id="{{ section.id }}">
-            <div class="font-bold text-2xl">
-                <h2>Filters</h2>
+        <div class="mx-10">
+            <div class="my-20">
+                <h1 class="font-squada text-orange-500 text-[10rem] -mb-7 relative -left-1">HOT SAUCE</h1>
+                <hr class="border-t-4 border-orange-500">
+                <h3 class="font-bold font-fraunces text-moss text-2xl mt-2">Discover our delicious range of heat levels and flavors! </h3>
             </div>
-            <div class="">
-                {% for filter in collection.filters %}
+
+            <div data-collection-inner class="w-full flex">
+                <collection-filters data-section-id="{{ section.id }}" class="mr-10 min-w-[200px]">
                     <div>
-                        <div class="font-bold">
-                            {{ filter.label }}
-                        </div>
-                        <div class="">
+                        <h2 class="font-squada text-5xl text-orange-500 -mb-1">FILTERS</h2>
+                        <hr class="border-t-2 border-orange-500">
+                    </div>
+                    
+                    {% for filter in collection.filters %}
+                        <div class="my-4">
+                            <div class="font-squada text-orange-500 text-2xl">
+                                {{ filter.label }}
+                                <hr class="border-t-2 border-orange-500 relative -top-1">
+                            </div>
+                            
                             {% if filter.type == "list" or filter.type == "boolean" %}
                                 {% for value in filter.values %}
-                                    <div>
+                                    <div class="my-1 flex items-center gap-2">
                                         <input
                                             type="checkbox"
                                             id="{{ filter.label | handle }}-{{ value.value | handle }}"
@@ -25,11 +35,26 @@
                                             value="{{ value.value | handle }}"
                                             data-add-url="{{ value.url_to_add }}"
                                             data-remove-url="{{ value.url_to_remove }}"
+                                            class="
+                                                custom-checkbox
+                                                h-4 w-4
+                                                appearance-none
+                                                rounded-none
+                                                border-2
+                                                border-moss
+                                                bg-transparent
+                                                align-middle
+                                                cursor-pointer
+                                                relative
+                                            "
                                             {% if value.active %}
                                                 checked
                                             {% endif %}
                                         >
-                                        <label for="{{ filter.label | handle }}-{{ value.value | handle }}">
+                                        <label 
+                                            for="{{ filter.label | handle }}-{{ value.value | handle }}"
+                                            class="font-bold font-fraunces text-moss text-lg cursor-pointer"
+                                        >
                                             {{ value.label }}
                                         </label>
                                     </div>
@@ -71,20 +96,21 @@
                                 </div>
                             {% endif %}
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </collection-filters>
+                    {% endfor %}
+                </collection-filters>
 
-        {% comment %} ----PRODUCT GRID---- {% endcomment %}
-        <div class="[display:grid] gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-start">
-            {% for product in collection.products %}
-                {% render 'popoca-simple-product-card', show_price: true, product: product %}
-            {% endfor %}
+                {% comment %} ----PRODUCT GRID---- {% endcomment %}
+                <div class="[display:grid] gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-start">
+                    {% for product in collection.products %}
+                        {% render 'popoca-simple-product-card', show_price: true, product: product %}
+                    {% endfor %}
+                </div>
+            </div>
+    
+    
         </div>
     </div>
-
-</div>
+</section>
 
 
 
