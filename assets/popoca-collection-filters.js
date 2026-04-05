@@ -23,6 +23,7 @@ class CollectionFilters extends HTMLElement {
             // checkbox / boolean / list filters
             url = new URL(input.checked ? input.dataset.addUrl : input.dataset.removeUrl, window.location.origin);
         } else {
+            console.log("price range filter changed")
             // price range filter
             url = new URL(location.href);
 
