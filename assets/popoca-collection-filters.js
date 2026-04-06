@@ -4,7 +4,7 @@ class CollectionFilters extends HTMLElement {
     }
 
     connectedCallback() {
-        this.filterInputs = this.querySelectorAll("input");
+        this.filterInputs = this.querySelectorAll('input[type="range"][data-min-value]');
         this.minRange = this.querySelector('input[type="range"][data-min-value]');
         this.maxRange = this.querySelector('input[type="range"][data-max-value]');
         
