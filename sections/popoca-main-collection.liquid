@@ -1,130 +1,170 @@
 <script src="{{ 'popoca-collection-filters.js' | asset_url }}" defer></script>
 <link rel="stylesheet" href="{{ 'popoca-main-collection.css' | asset_url }}">
 
+
 <section class="popoca-main-collection">
   <div class="mx-auto max-w-[1700px]">
     <div class="mx-10">
       <div class="mb-20">
         <h1 class="font-squada text-orange-500 text-[10rem] -mb-7 relative -left-1">HOT SAUCE</h1>
         <hr class="border-t-4 border-orange-500">
-        <h3 class="font-bold font-fraunces text-moss text-2xl mt-2">
-          Discover our delicious range of heat levels and flavors!
-        </h3>
+        <h3 class="font-bold font-fraunces text-moss text-2xl mt-2">Discover our delicious range of heat levels and flavors!</h3>
       </div>
 
-      <div data-collection-inner class="w-full flex font-sans">
-        <collection-filters data-section-id="{{ section.id }}" class="mr-10 min-w-[200px]">
-          <div>
-            <h2 class="text-2xl font-bold text-orange-500 -mb-1">FILTERS</h2>
-            <hr class="border-t-2 border-orange-500">
+
+
+      <div data-collection-inner class="font-sans">
+        <collection-filters data-section-id="{{ section.id }}">
+
+          {% comment %} sorting component {% endcomment %}
+          {% assign current_sort = collection.sort_by | default: collection.default_sort_by %}
+          <div class="flex justify-end items-center mb-4">
+            <h2 class="text-xl font-bold text-orange-500">SORT</h2>
+            <select
+              name="{{ section.id }}-sort" 
+              id="{{ section.id }}-sort"
+              class="bg-[#FFF5EC] font-sans font-bold text-orange-600 p-1 focus-visible:outline-none cursor-pointer border-t-2 border-orange-500"
+              data-sort-select
+            >
+              {% for option in collection.sort_options %}
+                {% if option.value == 'manual'
+                  or option.value == 'best-selling'
+                  or option.value == 'price-ascending'
+                  or option.value == 'price-descending'
+                %}
+                  <option 
+                    value="{{ option.value }}" 
+                    {% if option.value == current_sort %}selected{% endif %}
+                  >
+                    {% if option.value == 'manual' %}
+                      Heat Level
+                    {% else %}
+                      {{ option.name }}
+                    {% endif %}
+                  </option>
+                {% endif %}
+              {% endfor %}
+            </select>
           </div>
 
-          {% for filter in collection.filters %}
-            <div class="my-6">
-              <div class="text-moss text-xl font-bold">
-                {{ filter.label }}
-                <hr class="border-t-2 border-moss relative -top-1">
+          <div class="flex">
+            <div class="mr-10 min-w-[200px]">
+              <div>
+                <h2 class="text-2xl font-bold text-orange-500 -mb-1">FILTERS</h2>
+                <hr class="border-t-2 border-orange-500">
               </div>
-
-              {% if filter.type == 'list' or filter.type == 'boolean' %}
-                {% for value in filter.values %}
-                  <div class="my-1 flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      id="{{ filter.label | handle }}-{{ value.value | handle }}"
-                      name="{{ filter.label | handle }}"
-                      value="{{ value.value | handle }}"
-                      data-add-url="{{ value.url_to_add }}"
-                      data-remove-url="{{ value.url_to_remove }}"
-                      class="
-                        custom-checkbox
-                        h-4 w-4
-                        appearance-none
-                        rounded-none
-                        border-2
-                        border-moss
-                        bg-transparent
-                        align-middle
-                        cursor-pointer
-                        relative
-                      "
-                      {% if value.active %}
-                        checked
-                      {% endif %}
-                    >
-                    <label
-                      for="{{ filter.label | handle }}-{{ value.value | handle }}"
-                      class="text-moss text-base cursor-pointer"
-                    >
-                        {% if filter.label == "Heat Level" %}
-                                {% render 'popoca-heat-level-filter', heat: value.value, pixel_size: 20 %}
-                            {% else %}
-                                {{ value.label }}
-                        {% endif %}
-                    </label>
+              {% for filter in collection.filters %}
+                <div class="my-6">
+                  <div class="text-moss text-xl font-bold">
+                    {{ filter.label }}
+                    <hr class="border-t-2 border-moss relative -top-1">
                   </div>
-                {% endfor %}
-              {% else %}
 
-
-                {% if filter.min_value.value %}
-                  {% assign min_value = filter.min_value.value | divided_by: 100.0 %}
-                {% else %}
-                  {% assign min_value = 0.0 %}
-                {% endif %}
-
-                {% if filter.max_value.value %}
-                  {% assign max_value = filter.max_value.value | divided_by: 100.0 %}
-                {% else %}
-                  {% assign max_value = filter.range_max | divided_by: 100.0 %}
-                {% endif %}
-                <div>
-                    <div class="flex justify-between items-center font-sans font-semibold text-moss text-sm mb-2">
-                        <span>${{ min_value | round }}</span>
-                        <span >${{ max_value | round }}</span>
-                    </div>
-                    <div class="price-range-shell">
-                        <div class="price-range-track"></div>
+                  {% if filter.type == 'list' or filter.type == 'boolean' %}
+                    {% for value in filter.values %}
+                      <div class="my-1 flex items-center gap-2">
                         <input
-                            type="range"
-                            id="{{ filter.min_value.param_name }}"
-                            name="{{ filter.min_value.param_name }}"
-                            min="0"
-                            max="{{ filter.range_max | divided_by: 100 | round | plus: 1 }}"
-                            value="{{ min_value }}"
-                            data-param="{{ filter.min_value.param_name }}"
-                            data-min-value
-                            class="custom-range custom-range-min"
+                          type="checkbox"
+                          id="{{ filter.label | handle }}-{{ value.value | handle }}"
+                          name="{{ filter.label | handle }}"
+                          value="{{ value.value | handle }}"
+                          data-add-url="{{ value.url_to_add }}"
+                          data-remove-url="{{ value.url_to_remove }}"
+                          data-filter-input
+                          class="
+                            custom-checkbox
+                            h-4 w-4
+                            appearance-none
+                            rounded-none
+                            border-2
+                            border-moss
+                            bg-transparent
+                            align-middle
+                            cursor-pointer
+                            relative
+                          "
+                          {% if value.active %}
+                            checked
+                          {% endif %}
                         >
-                        <input
-                            type="range"
-                            id="{{ filter.max_value.param_name }}"
-                            name="{{ filter.max_value.param_name }}"
-                            min="0"
-                            max="{{ filter.range_max | divided_by: 100 | round | plus: 1 }}"
-                            value="{{ max_value }}"
-                            data-param="{{ filter.max_value.param_name }}"
-                            data-max-value
-                            class="custom-range custom-range-max"
+                        <label
+                          for="{{ filter.label | handle }}-{{ value.value | handle }}"
+                          class="text-moss text-base cursor-pointer"
                         >
+                            {% if filter.label == "Heat Level" %}
+                                    {% render 'popoca-heat-level-filter', heat: value.value, pixel_size: 20 %}
+                                {% else %}
+                                    {{ value.label }}
+                            {% endif %}
+                        </label>
+                      </div>
+                    {% endfor %}
+                  {% else %}
+
+
+                    {% if filter.min_value.value %}
+                      {% assign min_value = filter.min_value.value | divided_by: 100.0 %}
+                    {% else %}
+                      {% assign min_value = 0.0 %}
+                    {% endif %}
+
+                    {% if filter.max_value.value %}
+                      {% assign max_value = filter.max_value.value | divided_by: 100.0 %}
+                    {% else %}
+                      {% assign max_value = filter.range_max | divided_by: 100.0 %}
+                    {% endif %}
+                    <div>
+                        <div class="flex justify-between items-center font-sans font-semibold text-moss text-sm mb-2">
+                            <span>${{ min_value | round }}</span>
+                            <span >${{ max_value | round }}</span>
+                        </div>
+                        <div class="price-range-shell">
+                            <div class="price-range-track"></div>
+                            <input
+                                type="range"
+                                id="{{ filter.min_value.param_name }}"
+                                name="{{ filter.min_value.param_name }}"
+                                min="0"
+                                max="{{ filter.range_max | divided_by: 100 | round | plus: 1 }}"
+                                value="{{ min_value }}"
+                                data-param="{{ filter.min_value.param_name }}"
+                                data-filter-input
+                                data-min-value
+                                class="custom-range custom-range-min"
+                            >
+                            <input
+                                type="range"
+                                id="{{ filter.max_value.param_name }}"
+                                name="{{ filter.max_value.param_name }}"
+                                min="0"
+                                max="{{ filter.range_max | divided_by: 100 | round | plus: 1 }}"
+                                value="{{ max_value }}"
+                                data-param="{{ filter.max_value.param_name }}"
+                                data-filter-input
+                                data-max-value
+                                class="custom-range custom-range-max"
+                            >
+                        </div>
                     </div>
+                  {% endif %}
                 </div>
-              {% endif %}
+              {% endfor %}
             </div>
-          {% endfor %}
+
+            {% comment %} ----PRODUCT GRID---- {% endcomment %}
+            <div class="[display:grid] gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-start">
+              {% for product in collection.products %}
+                {% render 'popoca-simple-product-card', product: product %}
+              {% endfor %}
+            </div>
+          </div>
+
         </collection-filters>
-
-
-        {% comment %} ----PRODUCT GRID---- {% endcomment %}
-        <div class="[display:grid] gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-start">
-          {% for product in collection.products %}
-            {% render 'popoca-simple-product-card', product: product %}
-          {% endfor %}
-        </div>
       </div>
     </div>
   </div>
 </section>
+
 
 {% schema %}
 {
@@ -138,18 +178,3 @@
   ]
 }
 {% endschema %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

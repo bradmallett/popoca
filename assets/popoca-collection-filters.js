@@ -1,20 +1,28 @@
+// @ts-nocheck 
+
 class CollectionFilters extends HTMLElement {
     get sectionId() {
         return this.dataset.sectionId
     }
 
     connectedCallback() {
-        this.filterInputs = this.querySelectorAll('input[type="range"][data-min-value]');
+        this.filterInputs = this.querySelectorAll('input[data-filter-input]');
+        this.sortSelect = this.querySelector('select[data-sort-select]');
         this.minRange = this.querySelector('input[type="range"][data-min-value]');
         this.maxRange = this.querySelector('input[type="range"][data-max-value]');
         
         this.filterInputs.forEach((input) => {
-            input.addEventListener('change', this.handleClick)
+            input.addEventListener('change', this.handleFilter)
         })
+
+        if(this.sortSelect) {
+            this.sortSelect.addEventListener('change', this.handleSort)
+        }
     }
+        
 
     // use arrow so don't need to bind
-    handleClick = async (event) => {
+    handleFilter = async (event) => {
         const input = event.currentTarget;
         let url;
 
@@ -23,7 +31,6 @@ class CollectionFilters extends HTMLElement {
             // checkbox / boolean / list filters
             url = new URL(input.checked ? input.dataset.addUrl : input.dataset.removeUrl, window.location.origin);
         } else {
-            console.log("price range filter changed")
             // price range filter
             url = new URL(location.href);
 
@@ -37,7 +44,7 @@ class CollectionFilters extends HTMLElement {
         url.searchParams.set("section_id", this.sectionId);
         const res = await fetch(url);
         const html = await res.text();
-        
+
         // put in a tempDiv so i can query it to grab the part i need
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
@@ -48,6 +55,25 @@ class CollectionFilters extends HTMLElement {
         url.searchParams.delete("section_id");
         window.history.pushState({}, "", url)
     }   
+
+    handleSort = async (event) => {
+        const sortValue = event.currentTarget.value;
+        const url = new URL(location.href);
+
+        url.searchParams.set("sort_by", sortValue);
+        url.searchParams.set("section_id", this.sectionId);
+
+        const res = await fetch(url);
+        const html = await res.text();
+
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        document.querySelector('[data-collection-inner]').innerHTML = tempDiv.querySelector('[data-collection-inner]').innerHTML;
+
+        url.searchParams.delete("section_id");
+        window.history.pushState({}, "", url)
+    }
 }
 
 customElements.define("collection-filters", CollectionFilters)

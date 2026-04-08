@@ -17,7 +17,7 @@ class PopocaSimpleProductCard extends HTMLElement {
         const secondaryImageEl = this.querySelector('[data-secondary-image-el]');
         const priceEl = this.querySelector('[data-price-el]');
         const capEl = this.querySelector('[data-cap-el]');
-        const productLinkEl = this.querySelectorAll('[data-product-link]');
+        const productLinkEls = this.querySelectorAll('[data-product-link]');
         const addToCartEl = this.querySelector('[data-add-variant-to-cart]');
 
         // update image to selected variant img
@@ -33,28 +33,22 @@ class PopocaSimpleProductCard extends HTMLElement {
         const variantComparePrice = parseInt(selectedVariantBtn.dataset.compareCents || '0', 10);
         const variantIsOnSale = variantComparePrice && variantComparePrice > variantPrice;
 
+        priceEl.textContent = selectedVariantBtn.dataset.priceMoney;
         if (variantIsOnSale) {
             capEl.classList.remove('hidden');
             capEl.textContent = selectedVariantBtn.dataset.compareMoney;
-            priceEl.textContent = selectedVariantBtn.dataset.priceMoney;
+        
         } else {
-            capEl.classList.add('hidden');
-            priceEl.textContent = selectedVariantBtn.dataset.priceMoney;
+            capEl.classList.add('hidden');        
         }
 
-
-        // update price to selected variant price
-        // priceEl.textContent = selectedVariantBtn.dataset.priceMoney;
-
         // update variant urls
-        productLinkEl.forEach(el => {
+        productLinkEls.forEach(el => {
             el.href = selectedVariantBtn.dataset.variantUrl;
         })
 
-
-
-
-
+        // update add to cart url
+        addToCartEl.value = selectedVariantBtn.dataset.variantId;
     }
 }
 
