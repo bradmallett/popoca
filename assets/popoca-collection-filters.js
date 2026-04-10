@@ -2,24 +2,41 @@
 
 class CollectionFilters extends HTMLElement {
     get sectionId() {
-        return this.dataset.sectionId
+        return this.dataset.sectionId;
     }
 
     connectedCallback() {
         this.filterInputs = this.querySelectorAll('input[data-filter-input]');
-        this.sortSelect = this.querySelector('select[data-sort-select]');
-        this.minRange = this.querySelector('input[type="range"][data-min-value]');
-        this.maxRange = this.querySelector('input[type="range"][data-max-value]');
+        this.sortInputs = this.querySelectorAll('select[data-sort-select], input[data-sort-radio]');
+        this.openMobileFilterBtn = this.querySelector('[data-open-mobile-filters]');
+        this.closeMobileFilterBtn = this.querySelector('[data-popoca-mobile-filter-close]');
+        this.mobileFiltersEl = this.querySelector('[data-mobile-filters-sorting]');
         
         this.filterInputs.forEach((input) => {
             input.addEventListener('change', this.handleFilter)
-        })
+        });
 
-        if(this.sortSelect) {
-            this.sortSelect.addEventListener('change', this.handleSort)
+        this.sortInputs.forEach((input) => {
+            input.addEventListener('change', this.handleSort)
+        });
+        
+        if (this.closeMobileFilterBtn) {
+            this.closeMobileFilterBtn.addEventListener('click', this.closeMobileFilters);
+        }
+
+        if (this.openMobileFilterBtn) {
+            this.openMobileFilterBtn.addEventListener('click', this.openMobileFilters);
         }
     }
-        
+
+
+    openMobileFilters = (event) => {
+        this.mobileFiltersEl.classList.add('show-mobile');
+    }
+
+    closeMobileFilters = (event) => {
+        this.mobileFiltersEl.classList.remove('show-mobile');
+    }
 
     // use arrow so don't need to bind
     handleFilter = async (event) => {
@@ -34,10 +51,14 @@ class CollectionFilters extends HTMLElement {
             // price range filter
             url = new URL(location.href);
 
-            url.searchParams.delete(this.minRange.dataset.param);
-            url.searchParams.delete(this.maxRange.dataset.param);
-            url.searchParams.set(this.minRange.dataset.param, this.minRange.value);
-            url.searchParams.set(this.maxRange.dataset.param, this.maxRange.value);
+            const rangeGroup = input.closest('[data-price-range-group]');
+            const minRange = rangeGroup.querySelector('input[type="range"][data-min-value]');
+            const maxRange = rangeGroup.querySelector('input[type="range"][data-max-value]');
+
+            url.searchParams.delete(minRange.dataset.param);
+            url.searchParams.delete(maxRange.dataset.param);
+            url.searchParams.set(minRange.dataset.param, minRange.value);
+            url.searchParams.set(maxRange.dataset.param, maxRange.value);
         }
 
         // only fetch html for the section - not the whole page
@@ -51,6 +72,7 @@ class CollectionFilters extends HTMLElement {
 
         // replace the old dom with new
         document.querySelector('[data-collection-inner]').innerHTML = tempDiv.querySelector('[data-collection-inner]').innerHTML;
+        document.querySelector('[data-mobile-filters-sorting]').classList.add('show-mobile');
         
         url.searchParams.delete("section_id");
         window.history.pushState({}, "", url)
@@ -59,7 +81,7 @@ class CollectionFilters extends HTMLElement {
     handleSort = async (event) => {
         const sortValue = event.currentTarget.value;
         const url = new URL(location.href);
-
+        
         url.searchParams.set("sort_by", sortValue);
         url.searchParams.set("section_id", this.sectionId);
 
@@ -70,6 +92,7 @@ class CollectionFilters extends HTMLElement {
         tempDiv.innerHTML = html;
 
         document.querySelector('[data-collection-inner]').innerHTML = tempDiv.querySelector('[data-collection-inner]').innerHTML;
+        document.querySelector('[data-mobile-filters-sorting]').classList.add('show-mobile');
 
         url.searchParams.delete("section_id");
         window.history.pushState({}, "", url)
