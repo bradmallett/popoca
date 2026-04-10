@@ -9,7 +9,7 @@
  */
 {
   "current": {
-    "logo": "shopify://shop_images/logo-popoca-orange.png",
+    "logo": "shopify://shop_images/popoca-logo-use.png",
     "logo_height": 36,
     "logo_height_mobile": 28,
     "type_body_font": "inter_n4",
@@ -325,10 +325,10 @@
       "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7": {
         "settings": {
           "background": "rgba(0,0,0,0)",
-          "foreground_heading": "#000000",
-          "foreground": "#000000",
-          "primary": "#000000",
-          "primary_hover": "#00000087",
+          "foreground_heading": "#f97316",
+          "foreground": "#f97316",
+          "primary": "#f97316",
+          "primary_hover": "#c2410c",
           "border": "#e6e6e6",
           "shadow": "#000000",
           "primary_button_background": "#000000",
@@ -363,9 +363,9 @@
       },
       "scheme-email-signup-custom": {
         "settings": {
-          "background": "#ffffff",
-          "foreground_heading": "#000000",
-          "foreground": "#000000cf",
+          "background": "#f97316",
+          "foreground_heading": "#fff5ec",
+          "foreground": "#fff5ec",
           "primary": "#000000cf",
           "primary_hover": "#000000",
           "border": "#0000000f",
