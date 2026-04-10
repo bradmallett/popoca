@@ -4,15 +4,26 @@
   linear-gradient(rgba(255, 115, 0, 0.24), rgba(255, 115, 0, 0.188)),
   url('paper-bg699kb.jpg');
   background-position: center top;
+  background-attachment: fixed;
 }
 
-.custom-checkbox:checked::after {
+.mobile-filters-sorting {
+  background-image:
+  linear-gradient(rgba(255, 115, 0, 0.24), rgba(255, 115, 0, 0.188)),
+  url('paper-bg699kb.jpg');
+  background-position: center top;
+}
+
+.custom-sort-radio:checked::after, .custom-checkbox:checked::after {
   content: "";
   position: absolute;
-  inset: 2px;
+  width: 8px;
+  height: 8px;
   background: #6F9570;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-
 
 /* ---------------PRICE RANGE FILTER ---------------*/
 .price-range-shell {
@@ -83,4 +94,54 @@
   position: relative;
   z-index: 2;
   pointer-events: auto;
+}
+
+
+/* ---------------filters and sorting for mobile/desktop --------------- */
+.open-mobile-filters-button {
+  display: inline-flex;
+}
+
+.mobile-filters-sorting {
+  width: 100%;
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 9999;
+}
+
+.mobile-filters-sorting.show-mobile {
+  transform: translateX(0);
+}
+
+.sorting-desktop, .filters-desktop {
+  display: none;
+}
+
+
+
+@media screen and (min-width: 1024px) {
+  .sorting-desktop {
+    display: flex;
+  }
+
+  .filters-desktop {
+    display: block;
+  }
+
+  .mobile-filters-sorting {
+    display: none;
+  }
+
+  .open-mobile-filters-button {
+    display: none;
+  }
+
+  .show-mobile {
+    display: none;
+  }
+  
 }
